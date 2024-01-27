@@ -14,7 +14,7 @@ type Repository interface {
 	Update(course Course) int64
 	DeleteByID(courseID int) int64
 	UploadFile(fileHeader *multipart.FileHeader, name string) (string, error)
-	GetTotalDataVacanciesBySearchAndFilter(search dtos.Search) int64
+	GetTotalDataCourseBySearchAndFilter(search dtos.Search) int64
 	GetTotalDataCourse() int64
 }
 

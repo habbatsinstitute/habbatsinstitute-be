@@ -5,6 +5,7 @@ import (
 	"institute/config"
 	"institute/features/auth"
 	"institute/features/course"
+	"institute/features/news"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -26,5 +27,5 @@ func InitDB() *gorm.DB {
 }
 
 func migrate(db *gorm.DB) {
-	db.AutoMigrate(auth.User{}, course.Course{})
+	db.AutoMigrate(auth.User{}, course.Course{}, news.News{})
 }

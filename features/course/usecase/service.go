@@ -39,7 +39,7 @@ func (svc *service) FindAll(page, size int, search dtos.Search) ([]dtos.ResCours
 	}
 	var totalData int64 = 0
 	if search.Title != ""{
-		totalData = svc.model.GetTotalDataVacanciesBySearchAndFilter(search)
+		totalData = svc.model.GetTotalDataCourseBySearchAndFilter(search)
 	}else {
 		totalData = svc.model.GetTotalDataCourse()
 	}
