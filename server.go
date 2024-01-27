@@ -29,7 +29,7 @@ import (
 
 	nh "institute/features/news/handler"
 	nr "institute/features/news/repository"
-	nu "institute/features/news/useCase"
+	nu "institute/features/news/usecase"
 )
 
 func main() {
