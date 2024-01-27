@@ -9,9 +9,9 @@ import (
 
 func CloudinaryInstance(config config.ProgramConfig) *cloudinary.Cloudinary {
 	var urlCloudinary = fmt.Sprintf("cloudinary://%s:%s@%s",
-		config.CDN_API_Key,
-		config.CDN_API_Secret,
-		config.CDN_Cloud_Name)
+		config.CDN_API_KEY,
+		config.CDN_API_SECRET,
+		config.CDN_CLOUD_NAME)
 
 	CDNService, err := cloudinary.NewFromURL(urlCloudinary)
 	if err != nil {

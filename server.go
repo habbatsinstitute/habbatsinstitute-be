@@ -5,6 +5,7 @@ import (
 	"institute/config"
 	"institute/features/auth"
 	"institute/features/course"
+	"institute/features/news"
 	"institute/features/user"
 	"institute/helpers"
 	"institute/middlewares"
@@ -25,6 +26,10 @@ import (
 	uh "institute/features/user/handler"
 	ur "institute/features/user/repository"
 	uu "institute/features/user/usecase"
+
+	nh "institute/features/news/handler"
+	nr "institute/features/news/repository"
+	nu "institute/features/news/useCase"
 )
 
 func main() {
@@ -36,6 +41,7 @@ func main() {
 	routes.Auth(e, AuthHandler(), jwtService, *cfg)
 	routes.Courses(e, CourseHandler(), jwtService, *cfg)
 	routes.Users(e, UserHandler(), jwtService, *cfg)
+	routes.Newss(e, NewsHandler())
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello!")
@@ -52,8 +58,8 @@ func AuthHandler() auth.Handler{
 	validation := helpers.NewValidationRequest()
 
 	repo := ar.New(db)
-	uc := au.New(repo, jwt, hash, validation)
-	return ah.New(uc)
+	ac := au.New(repo, jwt, hash, validation)
+	return ah.New(ac)
 }
 
 func CourseHandler() course.Handler {
@@ -64,8 +70,8 @@ func CourseHandler() course.Handler {
 	db := utils.InitDB()
 
 	repo := cr.New(db, cdn, config)
-	uc :=	cu.New(repo, jwt)
-	return ch.New(uc)
+	cc :=	cu.New(repo, jwt)
+	return ch.New(cc)
 }
 
 func UserHandler() user.Handler {
@@ -78,4 +84,16 @@ func UserHandler() user.Handler {
 	repo := ur.New(db)
 	uc := uu.New(repo, jwt, hash)
 	return uh.New(uc)
+}
+
+func NewsHandler() news.Handler {
+	config := config.InitConfig()
+	cdn := utils.CloudinaryInstance(*config)
+
+	db := utils.InitDB()
+
+	repo := nr.New(db, cdn, config)
+	nc := nu.New(repo)
+	return nh.New(nc)
+
 }

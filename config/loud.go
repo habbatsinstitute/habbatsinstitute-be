@@ -22,13 +22,14 @@ func InitConfig() *ProgramConfig {
 }
 
 type ProgramConfig struct {
-	SECRET         	string
-	REFRESH_SECRET 	string
-	SERVER_PORT    	string
-	CDN_Cloud_Name  string
-	CDN_API_Key     string
-	CDN_API_Secret  string
-	CDN_Folder_Name string
+	SECRET         			string
+	REFRESH_SECRET 			string
+	SERVER_PORT    			string
+	CDN_CLOUD_NAME  		string
+	CDN_API_KEY     		string
+	CDN_API_SECRET  		string
+	CDN_FOLDER_ARTICLES		string
+	CDN_FOLDER_COURSE		string
 }
 
 type DatabaseConfig struct {
@@ -81,19 +82,23 @@ func loadConfig() *ProgramConfig {
 	}
 
 	if val, found := os.LookupEnv("CDN_CLOUD_NAME"); found {
-		res.CDN_Cloud_Name = val
+		res.CDN_CLOUD_NAME = val
 	}
 
 	if val, found := os.LookupEnv("CDN_API_KEY"); found {
-		res.CDN_API_Key = val
+		res.CDN_API_KEY = val
 	}
 
 	if val, found := os.LookupEnv("CDN_API_SECRET"); found {
-		res.CDN_API_Secret = val
+		res.CDN_API_SECRET = val
 	}
 
-	if val, found := os.LookupEnv("CDN_FOLDER_NAME"); found {
-		res.CDN_Folder_Name = val
+	if val, found := os.LookupEnv("CDN_FOLDER_ARTICLES"); found {
+		res.CDN_FOLDER_ARTICLES = val
+	}
+
+	if val, found := os.LookupEnv("CDN_FOLDER_COURSE"); found {
+		res.CDN_FOLDER_COURSE = val
 	}
 
 	return res

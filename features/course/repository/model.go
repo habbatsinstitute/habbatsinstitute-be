@@ -94,7 +94,7 @@ func (mdl *model) UploadFile(fileHeader *multipart.FileHeader, name string) (str
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	cfg := mdl.config.CDN_Folder_Name
+	cfg := mdl.config.CDN_FOLDER_COURSE
 
 	resp, err := mdl.cdn.Upload.Upload(ctx, file, uploader.UploadParams{
 		Folder: cfg,
@@ -108,7 +108,7 @@ func (mdl *model) UploadFile(fileHeader *multipart.FileHeader, name string) (str
 	return resp.SecureURL, nil
 }
 
-func (mdl *model) GetTotalDataVacanciesBySearchAndFilter(search dtos.Search) int64 {
+func (mdl *model) GetTotalDataCourseBySearchAndFilter(search dtos.Search) int64 {
 	var totalData int64
 
 	result := mdl.db.Table("courses").
