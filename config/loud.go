@@ -3,12 +3,12 @@ package config
 import (
 	"os"
 
-	// "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
 
 func InitConfig() *ProgramConfig {
-	// godotenv.Load()
+	godotenv.Load()
 
 	var res = new(ProgramConfig)
 	res = loadConfig()
