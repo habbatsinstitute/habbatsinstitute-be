@@ -41,7 +41,7 @@ func main() {
 	routes.Auth(e, AuthHandler(), jwtService, *cfg)
 	routes.Courses(e, CourseHandler(), jwtService, *cfg)
 	routes.Users(e, UserHandler(), jwtService, *cfg)
-	routes.Newss(e, NewsHandler())
+	routes.Newss(e, NewsHandler(), jwtService, *cfg)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello!")
