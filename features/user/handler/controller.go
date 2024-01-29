@@ -29,12 +29,13 @@ func (ctl *controller) GetUsers() echo.HandlerFunc {
 		pagination := dtos.Pagination{}
 		ctx.Bind(&pagination)
 		
+		if pagination.Page < 1 || pagination.Size < 1 {
+			pagination.Page = 1
+			pagination.Size = 10
+		}
+
 		page := pagination.Page
 		size := pagination.Size
-
-		if page <= 0 || size <= 0 {
-			return ctx.JSON(400, helper.Response("Please provide query `page` and `size` in number!"))
-		}
 
 		users := ctl.service.FindAll(page, size)
 
