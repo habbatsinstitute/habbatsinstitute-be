@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"institute/config"
 	"institute/features/news"
+	"institute/features/news/dtos"
 	"institute/helpers"
 	"mime/multipart"
 	"time"
@@ -65,6 +66,16 @@ func (mdl *model) SelectByID(newsID int) *news.News {
 	}
 
 	return &news
+}
+
+func (mdl *model) SelectAllCategory() ([]dtos.ResCategory, error) {
+	var Category []dtos.ResCategory
+
+	if err := mdl.db.Table("categories").Find(&Category).Error; err != nil {
+		return nil, err
+	}
+
+	return Category, nil
 }
 
 func (mdl *model) Update(news news.News) int64 {

@@ -15,4 +15,5 @@ func Newss(e *echo.Echo, handler news.Handler) {
 	newss.GET("/:id", handler.NewsDetails())
 	newss.PUT("/:id", handler.UpdateNews())
 	newss.DELETE("/:id", handler.DeleteNews())
+	newss.GET("/category", handler.GetCategory())
 }

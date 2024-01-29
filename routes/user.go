@@ -14,6 +14,7 @@ func Users(e *echo.Echo, handler user.Handler, jwt helpers.JWTInterface, config 
 	users := e.Group("/users")
 
 	users.GET("", handler.GetUsers(), m.AuthorizeJWT(jwt, 2, config.SECRET))
+	users.GET("/me", handler.MyProfile(), m.AuthorizeJWT(jwt, 3, config.SECRET))
 	
 	users.GET("/:id", handler.UserDetails(), m.AuthorizeJWT(jwt, 3, config.SECRET))
 	users.PATCH("/:id", handler.UpdateUser(), m.AuthorizeJWT(jwt, 3, config.SECRET))

@@ -19,3 +19,10 @@ type ResGetAllUsers struct {
 	RoleID		   int		`json:"role_id" form:"role_id"`
 	ExpiryDate 	   time.Time	`json:"expiry_date" form:"expiry_date"`
 }
+
+type ResMyProfile struct {
+	ID int 					`json:"id" form:"id"`
+	Username string 		`json:"username" form:"username"`
+	RoleID int 				`json:"role_id" form:"role_id"`
+	ExpiryDate time.Time 	`json:"expiry_date" form:"expiry_date"`
+}

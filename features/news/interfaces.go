@@ -14,6 +14,7 @@ type Repository interface {
 	Update(news News) int64
 	DeleteByID(newsID int) int64
 	UploadFile(fileHeader *multipart.FileHeader, name string) (string, error)
+	SelectAllCategory() ([]dtos.ResCategory, error)
 }
 
 type Usecase interface {
@@ -22,6 +23,7 @@ type Usecase interface {
 	Create(newNews dtos.InputNews, file *multipart.FileHeader) (*dtos.ResNews, error)
 	Modify(newsData dtos.InputNews, newsID int) bool
 	Remove(newsID int) bool
+	FindAllCategory() ([]dtos.ResCategory, error)
 }
 
 type Handler interface {
@@ -30,4 +32,5 @@ type Handler interface {
 	CreateNews() echo.HandlerFunc
 	UpdateNews() echo.HandlerFunc
 	DeleteNews() echo.HandlerFunc
+	GetCategory() echo.HandlerFunc
 }

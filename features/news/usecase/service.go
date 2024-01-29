@@ -118,3 +118,13 @@ func (svc *service) Remove(newsID int) bool {
 
 	return true
 }
+
+func (svc *service) FindAllCategory() ([]dtos.ResCategory, error) {
+	category, err := svc.model.SelectAllCategory()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return category, nil
+}
