@@ -23,7 +23,7 @@ func New(model user.Repository, jwt helpers.JWTInterface, hash helpers.HashInter
 	}
 }
 
-func (svc *service) FindAll(page, size int) []dtos.ResGetAllUsers {
+func (svc *service) FindAll(page, size int) ([]dtos.ResGetAllUsers, int64) {
 	var users []dtos.ResGetAllUsers
 
 	usersEnt := svc.model.Paginate(page, size)
@@ -38,7 +38,11 @@ func (svc *service) FindAll(page, size int) []dtos.ResGetAllUsers {
 		users = append(users, data)
 	}
 
-	return users
+	var totalData int64 = 0
+
+	totalData = svc.model.GetTotalDataUsers()
+
+	return users, totalData
 }
 
 func (svc *service) FindByID(userID int) *dtos.ResUser {
