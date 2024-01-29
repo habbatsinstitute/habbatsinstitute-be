@@ -16,6 +16,7 @@ type Repository interface {
 	UploadFile(fileHeader *multipart.FileHeader, name string) (string, error)
 	SelectAllCategory() ([]dtos.ResCategory, error)
 	GetTotalDataNews() int64
+	SearchNewsByTitle(title string) []News
 }
 
 type Usecase interface {
