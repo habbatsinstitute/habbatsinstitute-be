@@ -78,6 +78,8 @@ func (ctl *controller) CreateNews() echo.HandlerFunc {
 
 		ctx.Bind(&input)
 
+		userID := ctx.Get("user_id")
+
 		validate = validator.New(validator.WithRequiredStructEnabled())
 
 		err = validate.Struct(input)
@@ -89,7 +91,7 @@ func (ctl *controller) CreateNews() echo.HandlerFunc {
 			}))
 		}
 
-		news, err := ctl.service.Create(input, filHeader)
+		news, err := ctl.service.Create(input,userID.(int) ,filHeader)
 
 		if err != nil {
 			return errors.New("failed to create")

@@ -56,7 +56,7 @@ func (svc *service) FindByID(newsID int) *dtos.ResNews {
 	return &res
 }
 
-func (svc *service) Create(newNews dtos.InputNews, file *multipart.FileHeader) (*dtos.ResNews, error) {
+func (svc *service) Create(newNews dtos.InputNews,UserID int, file *multipart.FileHeader) (*dtos.ResNews, error) {
 	news := news.News{}
 	
 	url, err := svc.model.UploadFile(file, "")
@@ -65,6 +65,7 @@ func (svc *service) Create(newNews dtos.InputNews, file *multipart.FileHeader) (
 	}
 
 	news.ID = helpers.NewGenerator().GenerateRandomID()
+	news.UserID = UserID
 	news.Images = url
 	news.Category = newNews.Category
 	news.Title = newNews.Title
@@ -78,6 +79,7 @@ func (svc *service) Create(newNews dtos.InputNews, file *multipart.FileHeader) (
 
 	resNews := dtos.ResNews{}
 	resNews.ID = result.ID
+	resNews.UserID = result.UserID
 	resNews.Category = result.Category
 	resNews.Description = result.Description
 	resNews.Title = result.Title

@@ -4,6 +4,7 @@ import "time"
 
 type ResNews struct {
 	ID			int		`json:"id" form:"id"`
+	UserID      int     `json:"user_id" form:"user_id"`
 	Category 	string	`json:"category" form:"category"`
 	Images		string	`json:"images" form:"images"`
 	Title		string	`json:"title" form:"title"`
