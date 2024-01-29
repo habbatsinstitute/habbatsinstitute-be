@@ -15,10 +15,11 @@ type Repository interface {
 	DeleteByID(newsID int) int64
 	UploadFile(fileHeader *multipart.FileHeader, name string) (string, error)
 	SelectAllCategory() ([]dtos.ResCategory, error)
+	GetTotalDataNews() int64
 }
 
 type Usecase interface {
-	FindAll(page, size int) []dtos.ResNews
+	FindAll(page, size int) ([]dtos.ResNews, int64) 
 	FindByID(newsID int) *dtos.ResNews
 	Create(newNews dtos.InputNews,UserID int, file *multipart.FileHeader) (*dtos.ResNews, error)
 	Modify(newsData dtos.InputNews, newsID int) bool

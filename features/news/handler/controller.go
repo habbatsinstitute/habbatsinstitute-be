@@ -38,14 +38,17 @@ func (ctl *controller) GetNewss() echo.HandlerFunc {
 		page := pagination.Page
 		size := pagination.Size
 
-		newss := ctl.service.FindAll(page, size)
+		newss, totalData := ctl.service.FindAll(page, size)
 
 		if newss == nil {
 			return ctx.JSON(404, helper.Response("There is No Newss!"))
 		}
 
+		paginationResponse := helpers.PaginationResponse(page, size, int(totalData))
+
 		return ctx.JSON(200, helper.Response("Success!", map[string]any {
 			"data": newss,
+			"pagination":paginationResponse,
 		}))
 	}
 }

@@ -21,7 +21,7 @@ func New(model news.Repository) news.Usecase {
 	}
 }
 
-func (svc *service) FindAll(page, size int) []dtos.ResNews {
+func (svc *service) FindAll(page, size int) ([]dtos.ResNews, int64) {
 	var newss []dtos.ResNews
 
 	newssEnt := svc.model.Paginate(page, size)
@@ -35,8 +35,10 @@ func (svc *service) FindAll(page, size int) []dtos.ResNews {
 		
 		newss = append(newss, data)
 	}
+	var totalData int64 = 0
+	totalData = svc.model.GetTotalDataNews()
 
-	return newss
+	return newss, totalData
 }
 
 func (svc *service) FindByID(newsID int) *dtos.ResNews {

@@ -117,3 +117,16 @@ func (mdl *model) UploadFile(fileHeader *multipart.FileHeader, name string) (str
 	}
 	return resp.SecureURL, nil
 }
+
+func (mdl *model) GetTotalDataNews() int64 {
+	var totalData int64
+
+	result := mdl.db.Table("news").Where("deleted_at IS NULL").Count(&totalData)
+
+	if result.Error != nil {
+		log.Error(result.Error)
+		return 0
+	}
+
+	return totalData
+}
