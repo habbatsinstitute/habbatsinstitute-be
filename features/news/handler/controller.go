@@ -163,3 +163,18 @@ func (ctl *controller) DeleteNews() echo.HandlerFunc {
 		return ctx.JSON(200, helper.Response("News Success Deleted!", nil))
 	}
 }
+
+
+func (ctl *controller) GetCategory() echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		Category, err := ctl.service.FindAllCategory()
+
+		if err != nil {
+			return ctx.JSON(500, helpers.Response(err.Error()))
+		}
+
+		return ctx.JSON(200, helpers.Response("succes", map[string]any {
+			"data":Category,
+		}))
+	}
+}

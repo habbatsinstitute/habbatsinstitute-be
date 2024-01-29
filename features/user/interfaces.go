@@ -19,6 +19,7 @@ type Usecase interface {
 	Modify(userData dtos.InputUser, userID int) bool
 	Remove(userID int) bool
 	ModifyUser(userData dtos.UpdateUser, UserID int) bool
+	MyProfile(UserID int) *dtos.ResMyProfile
 }
 
 type Handler interface {
@@ -27,4 +28,5 @@ type Handler interface {
 	UpdateUser() echo.HandlerFunc
 	DeleteUser() echo.HandlerFunc
 	UpdateExpiryAccount() echo.HandlerFunc
+	MyProfile() echo.HandlerFunc
 }

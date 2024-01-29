@@ -45,7 +45,7 @@ func (svc *service) FindByID(userID int) *dtos.ResUser {
 	res := dtos.ResUser{}
 	user := svc.model.SelectByID(userID)
 
-	if user == nil {
+	if user == nil {	
 		return nil
 	}
 
@@ -107,4 +107,23 @@ func (svc *service) Remove(userID int) bool {
 	}
 
 	return true
+}
+
+func (svc *service) MyProfile(UserID int) *dtos.ResMyProfile {
+	res := dtos.ResMyProfile{}
+
+	user := svc.model.SelectByID(UserID)
+	
+	if user == nil {
+		return nil
+	}
+
+	err := smapping.FillStruct(&res, smapping.MapFields(user))
+
+	if err != nil {
+		log.Error(err)
+		return nil
+	}
+
+	return &res
 }

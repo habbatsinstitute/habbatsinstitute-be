@@ -14,3 +14,8 @@ type News struct {
 	Description	string	`gorm:"type:text"`
 }
 
+type Category struct {
+	ID 		int `gorm:"type:int(11)"`
+	Name 	string `gorm:"type:varchar(255)"`
+}
+
