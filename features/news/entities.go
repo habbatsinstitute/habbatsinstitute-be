@@ -8,6 +8,7 @@ type News struct {
 	gorm.Model
 
 	ID 			int 	`gorm:"type:int(11)"`
+	UserID		int 	`gorm:"type:int(11)"`
 	Category 	string	`gorm:"type:string"`
 	Images		string	`gorm:"type:text"`
 	Title		string	`gorm:"type:text"`
@@ -15,7 +16,8 @@ type News struct {
 }
 
 type Category struct {
-	ID 		int `gorm:"type:int(11)"`
-	Name 	string `gorm:"type:varchar(255)"`
+	ID 			int `gorm:"type:int(11)"`
+	UserID		int 	`gorm:"type:int(11)"`
+	Name 		string `gorm:"type:varchar(255)"`
 }
 

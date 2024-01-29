@@ -38,14 +38,17 @@ func (ctl *controller) GetNewss() echo.HandlerFunc {
 		page := pagination.Page
 		size := pagination.Size
 
-		newss := ctl.service.FindAll(page, size)
+		newss, totalData := ctl.service.FindAll(page, size)
 
 		if newss == nil {
 			return ctx.JSON(404, helper.Response("There is No Newss!"))
 		}
 
+		paginationResponse := helpers.PaginationResponse(page, size, int(totalData))
+
 		return ctx.JSON(200, helper.Response("Success!", map[string]any {
 			"data": newss,
+			"pagination":paginationResponse,
 		}))
 	}
 }
@@ -78,6 +81,8 @@ func (ctl *controller) CreateNews() echo.HandlerFunc {
 
 		ctx.Bind(&input)
 
+		userID := ctx.Get("user_id")
+
 		validate = validator.New(validator.WithRequiredStructEnabled())
 
 		err = validate.Struct(input)
@@ -89,7 +94,7 @@ func (ctl *controller) CreateNews() echo.HandlerFunc {
 			}))
 		}
 
-		news, err := ctl.service.Create(input, filHeader)
+		news, err := ctl.service.Create(input,userID.(int) ,filHeader)
 
 		if err != nil {
 			return errors.New("failed to create")

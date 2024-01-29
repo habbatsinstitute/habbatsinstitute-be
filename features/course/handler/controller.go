@@ -1,8 +1,7 @@
 package handler
 
 import (
-	"institute/helpers"
-	helper "institute/helpers"
+	helpers "institute/helpers"
 	"strconv"
 
 	"institute/features/course"
@@ -43,12 +42,12 @@ func (ctl *controller) GetCourses() echo.HandlerFunc {
 		courses, totalData := ctl.service.FindAll(page, pageSize, search)
 
 		if courses == nil {
-			return ctx.JSON(404, helper.Response("There is No Courses!"))
+			return ctx.JSON(404, helpers.Response("There is No Courses!"))
 		}
 
 		paginationResponse := helpers.PaginationResponse(page, pageSize, int(totalData))
 
-		return ctx.JSON(200, helper.Response("Success!", map[string]any {
+		return ctx.JSON(200, helpers.Response("Success!", map[string]any {
 			"data": courses,
 			"pagination":paginationResponse,
 		}))
@@ -61,16 +60,16 @@ func (ctl *controller) CourseDetails() echo.HandlerFunc {
 		courseID, err := strconv.Atoi(ctx.Param("id"))
 
 		if err != nil {
-			return ctx.JSON(400, helper.Response(err.Error()))
+			return ctx.JSON(400, helpers.Response(err.Error()))
 		}
 
 		course := ctl.service.FindByID(courseID)
 
 		if course == nil {
-			return ctx.JSON(404, helper.Response("Course Not Found!"))
+			return ctx.JSON(404, helpers.Response("Course Not Found!"))
 		}
 
-		return ctx.JSON(200, helper.Response("Success!", map[string]any {
+		return ctx.JSON(200, helpers.Response("Success!", map[string]any {
 			"data": course,
 		}))
 	}
@@ -82,6 +81,8 @@ func (ctl *controller) CreateCourse() echo.HandlerFunc {
 		fileHeader, err := ctx.FormFile("media_file")
 
 		ctx.Bind(&input)
+		
+		userID := ctx.Get("user_id")
 
 		validate = validator.New(validator.WithRequiredStructEnabled())
 
@@ -89,18 +90,21 @@ func (ctl *controller) CreateCourse() echo.HandlerFunc {
 
 		if err != nil {
 			errMap := helpers.ErrorMapValidation(err)
-			return ctx.JSON(400, helper.Response("Bad Request!", map[string]any {
+			return ctx.JSON(400, helpers.Response("Bad Request!", map[string]any {
 				"error": errMap,
 			}))
 		}
 
-		course, err := ctl.service.Create(input, fileHeader)
+		course, err := ctl.service.Create(input, userID.(int), fileHeader)
 
 		if course == nil {
-			return ctx.JSON(500, helper.Response("Something went Wrong!", nil))
+			return ctx.JSON(500, helpers.Response("Something went Wrong!", nil))
+		}
+		if err != nil {
+			return ctx.JSON(500, helpers.Response(err.Error())) 
 		}
 
-		return ctx.JSON(200, helper.Response("Success!", map[string]any {
+		return ctx.JSON(200, helpers.Response("Success!", map[string]any {
 			"data": course,
 		}))
 	}
@@ -113,13 +117,13 @@ func (ctl *controller) UpdateCourse() echo.HandlerFunc {
 		courseID, errParam := strconv.Atoi(ctx.Param("id"))
 
 		if errParam != nil {
-			return ctx.JSON(400, helper.Response(errParam.Error()))
+			return ctx.JSON(400, helpers.Response(errParam.Error()))
 		}
 
 		course := ctl.service.FindByID(courseID)
 
 		if course == nil {
-			return ctx.JSON(404, helper.Response("Course Not Found!"))
+			return ctx.JSON(404, helpers.Response("Course Not Found!"))
 		}
 		
 		ctx.Bind(&input)
@@ -129,7 +133,7 @@ func (ctl *controller) UpdateCourse() echo.HandlerFunc {
 
 		if err != nil {
 			errMap := helpers.ErrorMapValidation(err)
-			return ctx.JSON(400, helper.Response("Bad Request!", map[string]any {
+			return ctx.JSON(400, helpers.Response("Bad Request!", map[string]any {
 				"error": errMap,
 			}))
 		}
@@ -137,10 +141,10 @@ func (ctl *controller) UpdateCourse() echo.HandlerFunc {
 		update := ctl.service.Modify(input, courseID)
 
 		if !update {
-			return ctx.JSON(500, helper.Response("Something Went Wrong!"))
+			return ctx.JSON(500, helpers.Response("Something Went Wrong!"))
 		}
 
-		return ctx.JSON(200, helper.Response("Course Success Updated!"))
+		return ctx.JSON(200, helpers.Response("Course Success Updated!"))
 	}
 }
 
@@ -149,21 +153,21 @@ func (ctl *controller) DeleteCourse() echo.HandlerFunc {
 		courseID, err := strconv.Atoi(ctx.Param("id"))
 
 		if err != nil {
-			return ctx.JSON(400, helper.Response(err.Error()))
+			return ctx.JSON(400, helpers.Response(err.Error()))
 		}
 
 		course := ctl.service.FindByID(courseID)
 
 		if course == nil {
-			return ctx.JSON(404, helper.Response("Course Not Found!"))
+			return ctx.JSON(404, helpers.Response("Course Not Found!"))
 		}
 
 		delete := ctl.service.Remove(courseID)
 
 		if !delete {
-			return ctx.JSON(500, helper.Response("Something Went Wrong!"))
+			return ctx.JSON(500, helpers.Response("Something Went Wrong!"))
 		}
 
-		return ctx.JSON(200, helper.Response("Course Success Deleted!", nil))
+		return ctx.JSON(200, helpers.Response("Course Success Deleted!", nil))
 	}
 }

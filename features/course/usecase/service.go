@@ -64,7 +64,7 @@ func (svc *service) FindByID(courseID int) *dtos.ResCourse {
 	return &res
 }
 
-func (svc *service) Create(newCourse dtos.InputCourse, file *multipart.FileHeader) (*dtos.ResCourse, error) {
+func (svc *service) Create(newCourse dtos.InputCourse,UserID int, file *multipart.FileHeader) (*dtos.ResCourse, error) {
 	course := course.Course{}
 
 	url, err := svc.model.UploadFile(file, "")
@@ -73,6 +73,7 @@ func (svc *service) Create(newCourse dtos.InputCourse, file *multipart.FileHeade
 	}
 
 	course.ID = helpers.NewGenerator().GenerateRandomID()
+	course.UserID = UserID
 	course.MediaFile = url
 	course.Author = newCourse.Author
 	course.Title = newCourse.Title
@@ -86,6 +87,7 @@ func (svc *service) Create(newCourse dtos.InputCourse, file *multipart.FileHeade
 
 	resCourse := dtos.ResCourse{}
 	resCourse.ID = result.ID
+	resCourse.UserID = result.UserID
 	resCourse.Author = result.Author
 	resCourse.MediaFile = result.MediaFile
 	resCourse.Title = result.Title
