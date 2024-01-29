@@ -36,14 +36,17 @@ func (ctl *controller) GetUsers() echo.HandlerFunc {
 		page := pagination.Page
 		size := pagination.Size
 
-		users := ctl.service.FindAll(page, size)
+		users, totalData := ctl.service.FindAll(page, size)
 
 		if users == nil {
 			return ctx.JSON(404, helpers.Response("There is No Users!"))
 		}
 
+		paginationResponse := helpers.PaginationResponse(page, size, int(totalData))
+
 		return ctx.JSON(200, helpers.Response("Success!", map[string]any {
 			"data": users,
+			"pagination": paginationResponse,
 		}))
 	}
 }
