@@ -25,6 +25,7 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResNews, int64) {
 	var newss []dtos.ResNews
 
 	newssEnt := svc.model.Paginate(page, size)
+	
 
 	for _, news := range newssEnt {
 		var data dtos.ResNews
@@ -72,6 +73,7 @@ func (svc *service) Create(newNews dtos.InputNews,UserID int, file *multipart.Fi
 	news.Category = newNews.Category
 	news.Title = newNews.Title
 	news.Description = newNews.Description
+	news.NewsCreated = svc.model.GetTimeNow()
 
 	result, err := svc.model.Insert(&news)
 	if err != nil {
@@ -92,16 +94,31 @@ func (svc *service) Create(newNews dtos.InputNews,UserID int, file *multipart.Fi
 
 }
 
-func (svc *service) Modify(newsData dtos.InputNews, newsID int) bool {
-	newNews := news.News{}
+func (svc *service) Modify(newsData dtos.InputNews, newsID int, file *multipart.FileHeader) bool {
+	var url string
 
-	err := smapping.FillStruct(&newNews, smapping.MapFields(newsData))
-	if err != nil {
-		log.Error(err)
-		return false
+	if file != nil {
+		var err error
+		url, err = svc.model.UploadFile(file, newsData.Title)
+		if err != nil {
+			log.Error("failed upload images")
+			return false
+		}
 	}
 
-	newNews.ID = newsID
+	newNews := news.News{
+		ID: newsID,
+		Category: newsData.Category,
+		Title: newsData.Title,
+		Description: newsData.Description,
+	}
+
+	if file != nil {
+		newNews.Images = url
+	}
+
+	
+
 	rowsAffected := svc.model.Update(newNews)
 
 	if rowsAffected <= 0 {

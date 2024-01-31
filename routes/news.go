@@ -16,7 +16,7 @@ func Newss(e *echo.Echo, handler news.Handler, jwt helpers.JWTInterface, config 
 	newss.POST("", handler.CreateNews(), m.AuthorizeJWT(jwt, 2, config.SECRET))
 	
 	newss.GET("/:id", handler.NewsDetails())
-	newss.PUT("/:id", handler.UpdateNews(), m.AuthorizeJWT(jwt, 2, config.SECRET))
+	newss.PATCH("/:id", handler.UpdateNews(), m.AuthorizeJWT(jwt, 2, config.SECRET))
 	newss.DELETE("/:id", handler.DeleteNews(), m.AuthorizeJWT(jwt, 2, config.SECRET))
 	newss.GET("/category", handler.GetCategory())
 }

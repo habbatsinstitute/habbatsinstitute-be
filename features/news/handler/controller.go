@@ -112,6 +112,8 @@ func (ctl *controller) UpdateNews() echo.HandlerFunc {
 	return func (ctx echo.Context) error {
 		input := dtos.InputNews{}
 
+		fileHeader, err := ctx.FormFile("images")
+
 		newsID, errParam := strconv.Atoi(ctx.Param("id"))
 
 		if errParam != nil {
@@ -127,7 +129,7 @@ func (ctl *controller) UpdateNews() echo.HandlerFunc {
 		ctx.Bind(&input)
 
 		validate = validator.New(validator.WithRequiredStructEnabled())
-		err := validate.Struct(input)
+		err = validate.Struct(input)
 
 		if err != nil {
 			errMap := helpers.ErrorMapValidation(err)
@@ -136,7 +138,7 @@ func (ctl *controller) UpdateNews() echo.HandlerFunc {
 			}))
 		}
 
-		update := ctl.service.Modify(input, newsID)
+		update := ctl.service.Modify(input, newsID, fileHeader)
 
 		if !update {
 			return ctx.JSON(500, helper.Response("Something Went Wrong!"))

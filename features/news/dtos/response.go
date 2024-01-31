@@ -9,7 +9,7 @@ type ResNews struct {
 	Images		string	`json:"images" form:"images"`
 	Title		string	`json:"title" form:"title"`
 	Description	string	`json:"description" form:"description"`
-	CreatedAt	time.Time `json:"created_at" form:"created_at"`
+	NewsCreated	time.Time `json:"created_at" form:"created_at"`
 }
 
 type ResCategory struct {
