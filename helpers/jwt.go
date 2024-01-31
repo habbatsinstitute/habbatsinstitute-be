@@ -38,7 +38,7 @@ func (j *JWT) GenerateToken(userID string, roleID string) string {
 	claims["user_id"] = userID
 	claims["role_id"] = roleID
 	claims["iat"] = time.Now().Unix()
-	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 168).Unix()
 
 	var sign = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	validToken, err := sign.SignedString([]byte(j.signKey))
