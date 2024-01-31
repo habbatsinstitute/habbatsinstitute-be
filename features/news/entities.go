@@ -1,6 +1,8 @@
 package news
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -13,6 +15,7 @@ type News struct {
 	Images		string	`gorm:"type:text"`
 	Title		string	`gorm:"type:text"`
 	Description	string	`gorm:"type:text"`
+	NewsCreated time.Time 
 }
 
 type Category struct {

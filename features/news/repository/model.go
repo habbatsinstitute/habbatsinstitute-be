@@ -142,3 +142,9 @@ func (mdl *model) SearchNewsByTitle(title string) []news.News {
 	}
 	return news
 }
+
+func (mdl *model) GetTimeNow() time.Time {
+	wibLocation, _ := time.LoadLocation("Asia/Jakarta")
+
+	return time.Now().In(wibLocation)
+}
