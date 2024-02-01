@@ -30,7 +30,7 @@ func (ctl *controller) GetUsers() echo.HandlerFunc {
 		
 		if pagination.Page < 1 || pagination.Size < 1 {
 			pagination.Page = 1
-			pagination.Size = 10
+			pagination.Size = 5
 		}
 
 		page := pagination.Page
