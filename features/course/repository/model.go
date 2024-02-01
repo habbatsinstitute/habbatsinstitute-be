@@ -69,7 +69,7 @@ func (mdl *model) SelectByID(courseID int) *course.Course {
 }
 
 func (mdl *model) Update(course course.Course) int64 {
-	result := mdl.db.Save(&course)
+	result := mdl.db.Updates(&course)
 
 	if result.Error != nil {
 		log.Error(result.Error)

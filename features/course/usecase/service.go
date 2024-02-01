@@ -98,22 +98,35 @@ func (svc *service) Create(newCourse dtos.InputCourse,UserID int, file *multipar
 	return &resCourse, nil
 }
 
-func (svc *service) Modify(courseData dtos.InputCourse, courseID int) bool {
-	newCourse := course.Course{}
+func (svc *service) Modify(courseData dtos.InputCourse, courseID int, file *multipart.FileHeader) bool {
+	var url string
 
-	err := smapping.FillStruct(&newCourse, smapping.MapFields(courseData))
-	if err != nil {
-		log.Error(err)
-		return false
+	if file != nil {
+		var err error
+		url, err = svc.model.UploadFile(file, courseData.Title)
+		if err != nil {
+			log.Error("failed upload images")
+			return false
+		}
+	}
+	newCourse := course.Course{
+		ID: courseID,
+		Title: courseData.Title,
+		Description: courseData.Description,
+		Author: courseData.Author,
 	}
 
-	newCourse.ID = courseID
+	if file != nil {
+		newCourse.MediaFile = url
+	}
+
 	rowsAffected := svc.model.Update(newCourse)
 
-	if rowsAffected <= 0 {
-		log.Error("There is No Course Updated!")
+	if rowsAffected < 0 {
+		log.Error("there is no course updated!")
 		return false
 	}
+	return true
 	
 	return true
 }
