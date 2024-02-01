@@ -19,4 +19,5 @@ func Newss(e *echo.Echo, handler news.Handler, jwt helpers.JWTInterface, config 
 	newss.PATCH("/:id", handler.UpdateNews(), m.AuthorizeJWT(jwt, 2, config.SECRET))
 	newss.DELETE("/:id", handler.DeleteNews(), m.AuthorizeJWT(jwt, 2, config.SECRET))
 	newss.GET("/category", handler.GetCategory())
+	newss.GET("/:title", handler.SearchNewsByTitle())
 }

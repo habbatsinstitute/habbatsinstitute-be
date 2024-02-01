@@ -131,10 +131,10 @@ func (mdl *model) GetTotalDataNews() int64 {
 	return totalData
 }
 
-func (mdl *model) SearchNewsByTitle(title string) []news.News {
+func (mdl *model) SearchNewsByTitle(title string) []news.News{
 	var news []news.News
 
-	result := mdl.db.Table("news").Where("title LIKE ?", "%"+title+"%").Find(&news)
+	result := mdl.db.Where("title LIKE ?", "%"+title+"%").Find(&news)
 
 	if result.Error != nil {
 		log.Error(result.Error)

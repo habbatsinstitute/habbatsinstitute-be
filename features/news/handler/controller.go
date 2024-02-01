@@ -186,3 +186,16 @@ func (ctl *controller) GetCategory() echo.HandlerFunc {
 		}))
 	}
 }
+
+func (ctl *controller) SearchNewsByTitle() echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		title := ctx.Param("title")
+		titles, err := ctl.service.SearchNews(title)
+		if err != nil {
+			return ctx.JSON(400, helpers.Response("not found"))
+		}
+		return ctx.JSON(200, helpers.Response("succes", map[string]any{
+			"data": titles,
+		}))
+	}
+}
