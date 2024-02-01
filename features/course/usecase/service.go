@@ -78,6 +78,7 @@ func (svc *service) Create(newCourse dtos.InputCourse,UserID int, file *multipar
 	course.Author = newCourse.Author
 	course.Title = newCourse.Title
 	course.Description = newCourse.Description
+	course.CourseCreatedAt = svc.model.GetTimeNow()
 
 	result, err := svc.model.Insert(&course)
 	if err != nil {
@@ -92,6 +93,7 @@ func (svc *service) Create(newCourse dtos.InputCourse,UserID int, file *multipar
 	resCourse.MediaFile = result.MediaFile
 	resCourse.Title = result.Title
 	resCourse.Description = result.Description
+	resCourse.CourseCreatedAt = result.CourseCreatedAt
 
 	return &resCourse, nil
 }

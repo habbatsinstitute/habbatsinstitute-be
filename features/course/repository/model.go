@@ -134,3 +134,8 @@ func (mdl *model) GetTotalDataCourse() int64 {
 
 	return totalData
 }
+
+func (mdl *model) GetTimeNow() time.Time {
+	wibLocation, _ := time.LoadLocation("Asia/Jakarta")
+	return time.Now().In(wibLocation)
+}
