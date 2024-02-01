@@ -149,3 +149,24 @@ func (svc *service) FindAllCategory() ([]dtos.ResCategory, error) {
 
 	return category, nil
 }
+
+func (svc *service) SearchNews(title string) ([]dtos.ResNews, error) {
+	newsList := svc.model.SearchNewsByTitle(title)
+
+	// convert newslist to dtos
+	resNewsList := make([]dtos.ResNews, len(newsList))
+	for i, n := range newsList {
+		resNewsList[i] = dtos.ResNews{
+			ID:    n.ID,
+			UserID: n.UserID,
+			Title: n.Title,
+			Description: n.Description,
+			Category: n.Category,
+			Images: n.Images,
+			NewsCreated: n.NewsCreated,
+
+		}
+	}
+
+	return resNewsList, nil
+}

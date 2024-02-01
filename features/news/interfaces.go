@@ -28,6 +28,7 @@ type Usecase interface {
 	Modify(newsData dtos.InputNews, newsID int, file *multipart.FileHeader) bool
 	Remove(newsID int) bool
 	FindAllCategory() ([]dtos.ResCategory, error)
+	SearchNews(title string) ([]dtos.ResNews, error)
 }
 
 type Handler interface {
@@ -37,4 +38,5 @@ type Handler interface {
 	UpdateNews() echo.HandlerFunc
 	DeleteNews() echo.HandlerFunc
 	GetCategory() echo.HandlerFunc
+	SearchNewsByTitle() echo.HandlerFunc
 }
