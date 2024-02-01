@@ -114,6 +114,8 @@ func (ctl *controller) UpdateCourse() echo.HandlerFunc {
 	return func (ctx echo.Context) error {
 		input := dtos.InputCourse{}
 
+		fileHeader, err := ctx.FormFile("media_file")
+
 		courseID, errParam := strconv.Atoi(ctx.Param("id"))
 
 		if errParam != nil {
@@ -129,7 +131,7 @@ func (ctl *controller) UpdateCourse() echo.HandlerFunc {
 		ctx.Bind(&input)
 
 		validate = validator.New(validator.WithRequiredStructEnabled())
-		err := validate.Struct(input)
+		err = validate.Struct(input)
 
 		if err != nil {
 			errMap := helpers.ErrorMapValidation(err)
@@ -138,7 +140,7 @@ func (ctl *controller) UpdateCourse() echo.HandlerFunc {
 			}))
 		}
 
-		update := ctl.service.Modify(input, courseID)
+		update := ctl.service.Modify(input, courseID, fileHeader)
 
 		if !update {
 			return ctx.JSON(500, helpers.Response("Something Went Wrong!"))

@@ -69,7 +69,7 @@ func (mdl *model) SelectByID(courseID int) *course.Course {
 }
 
 func (mdl *model) Update(course course.Course) int64 {
-	result := mdl.db.Save(&course)
+	result := mdl.db.Updates(&course)
 
 	if result.Error != nil {
 		log.Error(result.Error)
@@ -133,4 +133,9 @@ func (mdl *model) GetTotalDataCourse() int64 {
 	}
 
 	return totalData
+}
+
+func (mdl *model) GetTimeNow() time.Time {
+	wibLocation, _ := time.LoadLocation("Asia/Jakarta")
+	return time.Now().In(wibLocation)
 }
