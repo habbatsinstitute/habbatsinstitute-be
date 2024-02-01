@@ -30,7 +30,7 @@ func (ctl *controller) GetCourses() echo.HandlerFunc {
 
 		if pagination.Page < 1 || pagination.PageSize < 1 {
 			pagination.Page = 1
-			pagination.PageSize = 20
+			pagination.PageSize = 5
 		}
 
 		search := dtos.Search{}
