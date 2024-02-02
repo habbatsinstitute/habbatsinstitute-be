@@ -15,8 +15,8 @@ type QuestionAndReply struct {
 }
 
 type User struct {
-	ID    int
-	Email string
+	ID    			int
+	Username		string
 }
 
 type QuestionAndPrompt struct {

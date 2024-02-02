@@ -1,12 +1,15 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"institute/config"
 	"institute/features/auth"
 	"institute/features/course"
 	"institute/features/news"
 
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -28,4 +31,16 @@ func InitDB() *gorm.DB {
 
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{})
+}
+
+func ConnectMongo() *mongo.Database {
+	config := config.LoadMongoConfig()
+
+	clientOptions := options.Client()
+	clientOptions.ApplyURI(config.MONGO_URI)
+	client, err := mongo.Connect(context.Background(), clientOptions)
+	if err != nil {
+		return nil
+	}
+	return client.Database(config.MONGO_DB_NAME)
 }
