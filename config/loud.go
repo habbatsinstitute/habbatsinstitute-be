@@ -30,6 +30,7 @@ type ProgramConfig struct {
 	CDN_API_SECRET  		string
 	CDN_FOLDER_ARTICLES		string
 	CDN_FOLDER_COURSE		string
+	OPENAI_KEY				string
 }
 
 type DatabaseConfig struct {
@@ -40,6 +41,10 @@ type DatabaseConfig struct {
 	DB_NAME string
 }
 
+type MongoConfig struct {
+	MONGO_URI		string
+	MONGO_DB_NAME	string
+}
 func LoadDBConfig() *DatabaseConfig {
 	var res = new(DatabaseConfig)
 
@@ -99,6 +104,24 @@ func loadConfig() *ProgramConfig {
 
 	if val, found := os.LookupEnv("CDN_FOLDER_COURSE"); found {
 		res.CDN_FOLDER_COURSE = val
+	}
+
+	if val, found := os.LookupEnv("OPENAI_KEY"); found {
+		res.OPENAI_KEY = val
+	}
+
+	return res
+}
+
+func LoadMongoConfig() *MongoConfig {
+	var res = new(MongoConfig)
+
+	if val, found := os.LookupEnv("MONGO_URI"); found {
+		res.MONGO_URI = val
+	}
+
+	if val, found := os.LookupEnv("MONGO_DB_NAME"); found {
+		res.MONGO_DB_NAME = val
 	}
 
 	return res

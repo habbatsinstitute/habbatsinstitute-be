@@ -30,6 +30,11 @@ import (
 	nh "institute/features/news/handler"
 	nr "institute/features/news/repository"
 	nu "institute/features/news/usecase"
+
+	"institute/features/chatbot"
+	cbh "institute/features/chatbot/handler"
+	cbr "institute/features/chatbot/repository"
+	cbu "institute/features/chatbot/usecase"
 )
 
 func main() {
@@ -42,6 +47,7 @@ func main() {
 	routes.Courses(e, CourseHandler(), jwtService, *cfg)
 	routes.Users(e, UserHandler(), jwtService, *cfg)
 	routes.Newss(e, NewsHandler(), jwtService, *cfg)
+	routes.Chatbots(e, ChatbotHandler(cfg), jwtService, *cfg)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello!")
@@ -96,4 +102,17 @@ func NewsHandler() news.Handler {
 	nc := nu.New(repo)
 	return nh.New(nc)
 
+}
+
+func ChatbotHandler(cfg *config.ProgramConfig) chatbot.Handler {
+	db := utils.InitDB()
+	mongoDB := utils.ConnectMongo()
+	collection := mongoDB.Collection("chatbot_histories")
+
+	validation := helpers.NewValidationRequest()
+	openAI := helpers.NewOpenAI(cfg.OPENAI_KEY)
+
+	repo := cbr.New(db, collection)
+	uc := cbu.New(repo, validation, openAI)
+	return cbh.New(uc)
 }

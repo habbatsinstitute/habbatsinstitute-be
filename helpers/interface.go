@@ -28,6 +28,10 @@ type OpenFileHeaderInterface interface {
 }
 
 type GeneratorInterface interface {
-	GenerateRandomOTP() string
 	GenerateRandomID() int
+}
+
+type OpenAIInterface interface {
+	GetAppInformation(question string, qnaList map[string]string) (string, error)
+	GetNewsContent(prompt string) (string, error)
 }
