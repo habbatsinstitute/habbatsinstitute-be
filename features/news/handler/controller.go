@@ -25,7 +25,7 @@ func New(service news.Usecase) news.Handler {
 
 var validate *validator.Validate
 
-func (ctl *controller) GetNewss() echo.HandlerFunc {
+func (ctl *controller) GetNews() echo.HandlerFunc {
 	return func (ctx echo.Context) error  {
 		pagination := dtos.Pagination{}
 		ctx.Bind(&pagination)
@@ -41,7 +41,9 @@ func (ctl *controller) GetNewss() echo.HandlerFunc {
 		newss, totalData := ctl.service.FindAll(page, size)
 
 		if newss == nil {
-			return ctx.JSON(404, helper.Response("There is No Newss!"))
+			return ctx.JSON(404, helper.Response("There is No Newss!", map[string]any{
+				"data": []string{},
+			}))
 		}
 
 		paginationResponse := helpers.PaginationResponse(page, size, int(totalData))
@@ -64,8 +66,10 @@ func (ctl *controller) NewsDetails() echo.HandlerFunc {
 
 		news := ctl.service.FindByID(newsID)
 
-		if news == nil {
-			return ctx.JSON(404, helper.Response("News Not Found!"))
+		if news.ID < 0 {
+			return ctx.JSON(404, helper.Response("News Not Found!", map[string]any{
+				"data":news,
+			}))
 		}
 
 		return ctx.JSON(200, helper.Response("Success!", map[string]any {
@@ -168,7 +172,9 @@ func (ctl *controller) DeleteNews() echo.HandlerFunc {
 			return ctx.JSON(500, helper.Response("Something Went Wrong!"))
 		}
 
-		return ctx.JSON(200, helper.Response("News Success Deleted!", nil))
+		return ctx.JSON(200, helper.Response("News Success Deleted!", map[string]any{
+			"data":news,
+		}))
 	}
 }
 

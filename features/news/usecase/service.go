@@ -50,11 +50,13 @@ func (svc *service) FindByID(newsID int) *dtos.ResNews {
 		return nil
 	}
 
-	err := smapping.FillStruct(&res, smapping.MapFields(news))
-	if err != nil {
-		log.Error(err)
-		return nil
-	}
+	res.ID = news.ID
+	res.Title = news.Title
+	res.Category = news.Category
+	res.Description = news.Description
+	res.NewsCreated = news.NewsCreated
+	res.Images = news.Images
+	res.UserID = news.UserID
 
 	return &res
 }
