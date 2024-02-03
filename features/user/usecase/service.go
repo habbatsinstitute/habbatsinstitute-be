@@ -62,26 +62,6 @@ func (svc *service) FindByID(userID int) *dtos.ResUser {
 	return &res
 }
 
-func (svc *service) Modify(userData dtos.InputUser, userID int) bool {
-	newUser := user.User{}
-
-	err := smapping.FillStruct(&newUser, smapping.MapFields(userData))
-	if err != nil {
-		log.Error(err)
-		return false
-	}
-
-	newUser.ID = userID
-	rowsAffected := svc.model.Update(newUser)
-
-	if rowsAffected <= 0 {
-		log.Error("There is No User Updated!")
-		return false
-	}
-	
-	return true
-}
-
 func (svc *service) ModifyUser(userData dtos.UpdateUser, UserID int) bool {
 	newData := user.User{}
 	

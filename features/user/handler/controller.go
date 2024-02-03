@@ -72,44 +72,6 @@ func (ctl *controller) UserDetails() echo.HandlerFunc {
 	}
 }
 
-func (ctl *controller) UpdateUser() echo.HandlerFunc {
-	return func (ctx echo.Context) error {
-		input := dtos.InputUser{}
-
-		userID, errParam := strconv.Atoi(ctx.Param("id"))
-
-		if errParam != nil {
-			return ctx.JSON(400, helpers.Response(errParam.Error()))
-		}
-
-		user := ctl.service.FindByID(userID)
-
-		if user == nil {
-			return ctx.JSON(404, helpers.Response("User Not Found!"))
-		}
-		
-		ctx.Bind(&input)
-
-		validate = validator.New(validator.WithRequiredStructEnabled())
-		err := validate.Struct(input)
-
-		if err != nil {
-			errMap := helpers.ErrorMapValidation(err)
-			return ctx.JSON(400, helpers.Response("Bad Request!", map[string]any {
-				"error": errMap,
-			}))
-		}
-
-		update := ctl.service.Modify(input, userID)
-
-		if !update {
-			return ctx.JSON(500, helpers.Response("Something Went Wrong!"))
-		}
-
-		return ctx.JSON(200, helpers.Response("User Success Updated!"))
-	}
-}
-
 func (ctl *controller) UpdateExpiryAccount() echo.HandlerFunc {
 	return func (ctx echo.Context) error {
 		input := dtos.UpdateUser{}
