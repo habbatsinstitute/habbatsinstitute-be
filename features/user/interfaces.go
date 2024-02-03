@@ -17,7 +17,6 @@ type Repository interface {
 type Usecase interface {
 	FindAll(page, size int) ([]dtos.ResGetAllUsers, int64)
 	FindByID(userID int) *dtos.ResUser
-	Modify(userData dtos.InputUser, userID int) bool
 	Remove(userID int) bool
 	ModifyUser(userData dtos.UpdateUser, UserID int) bool
 	MyProfile(UserID int) *dtos.ResMyProfile
@@ -26,7 +25,6 @@ type Usecase interface {
 type Handler interface {
 	GetUsers() echo.HandlerFunc
 	UserDetails() echo.HandlerFunc
-	UpdateUser() echo.HandlerFunc
 	DeleteUser() echo.HandlerFunc
 	UpdateExpiryAccount() echo.HandlerFunc
 	MyProfile() echo.HandlerFunc
