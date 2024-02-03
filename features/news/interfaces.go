@@ -32,7 +32,7 @@ type Usecase interface {
 }
 
 type Handler interface {
-	GetNewss() echo.HandlerFunc
+	GetNews() echo.HandlerFunc
 	NewsDetails() echo.HandlerFunc
 	CreateNews() echo.HandlerFunc
 	UpdateNews() echo.HandlerFunc
