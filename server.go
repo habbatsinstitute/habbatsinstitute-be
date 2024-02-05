@@ -72,11 +72,12 @@ func CourseHandler() course.Handler {
 	config := config.InitConfig()
 	cdn := utils.CloudinaryInstance(*config)
 	jwt := helpers.NewJWT(*config)
+	validator := helpers.NewValidationRequest()
 
 	db := utils.InitDB()
 
 	repo := cr.New(db, cdn, config)
-	cc :=	cu.New(repo, jwt)
+	cc :=	cu.New(repo, jwt, validator)
 	return ch.New(cc)
 }
 
