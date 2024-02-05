@@ -4,7 +4,7 @@ import "time"
 
 type RequestLogin struct {
 	Username string `json:"username" form:"username" validate:"required"`
-	Password string `json:"password" form:"password" validate:"required,alphanum,min=8"`
+	Password string `json:"password" form:"password" validate:"required,min=8"`
 }
 
 type InputUser struct {

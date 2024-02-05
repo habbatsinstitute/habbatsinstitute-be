@@ -127,8 +127,6 @@ func (svc *service) Modify(courseData dtos.InputCourse, courseID int, file *mult
 		return false
 	}
 	return true
-	
-	return true
 }
 
 func (svc *service) Remove(courseID int) bool {
