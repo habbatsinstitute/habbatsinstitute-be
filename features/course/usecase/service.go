@@ -5,7 +5,10 @@ import (
 	"institute/features/course"
 	"institute/features/course/dtos"
 	"institute/helpers"
+	"io"
+	"io/ioutil"
 	"mime/multipart"
+	"net/http"
 
 	"github.com/labstack/gommon/log"
 	"github.com/mashingan/smapping"
@@ -14,12 +17,14 @@ import (
 type service struct {
 	model course.Repository
 	jwt helpers.JWTInterface
+	validator helpers.ValidationInterface
 }
 
-func New(model course.Repository, jwt helpers.JWTInterface) course.Usecase {
+func New(model course.Repository, jwt helpers.JWTInterface, validator helpers.ValidationInterface) course.Usecase {
 	return &service {
 		model: model,
 		jwt: jwt,
+		validator: validator,
 	}
 }
 
@@ -64,12 +69,16 @@ func (svc *service) FindByID(courseID int) *dtos.ResCourse {
 	return &res
 }
 
-func (svc *service) Create(newCourse dtos.InputCourse,UserID int, file *multipart.FileHeader) (*dtos.ResCourse, error) {
+func (svc *service) Create(newCourse dtos.InputCourse,UserID int, file *multipart.FileHeader) (*dtos.ResCourse,[]string, error) {
 	course := course.Course{}
+
+	if errorList, err := svc.ValidateInput(newCourse, file); err != nil || len(errorList) > 0 {
+		return nil, errorList, err
+	}
 
 	url, err := svc.model.UploadFile(file, "")
 	if err != nil {
-		return nil, errors.New("upload image failed")
+		return nil, nil, errors.New("upload image failed")
 	}
 
 	course.ID = helpers.NewGenerator().GenerateRandomID()
@@ -83,7 +92,7 @@ func (svc *service) Create(newCourse dtos.InputCourse,UserID int, file *multipar
 	result, err := svc.model.Insert(&course)
 	if err != nil {
 		log.Error(err)
-		return nil, errors.New("failed to create course")
+		return nil, nil, errors.New("failed to create course")
 	}
 
 	resCourse := dtos.ResCourse{}
@@ -95,7 +104,7 @@ func (svc *service) Create(newCourse dtos.InputCourse,UserID int, file *multipar
 	resCourse.Description = result.Description
 	resCourse.CourseCreatedAt = result.CourseCreatedAt
 
-	return &resCourse, nil
+	return &resCourse, nil, nil
 }
 
 func (svc *service) Modify(courseData dtos.InputCourse, courseID int, file *multipart.FileHeader) bool {
@@ -127,8 +136,6 @@ func (svc *service) Modify(courseData dtos.InputCourse, courseID int, file *mult
 		return false
 	}
 	return true
-	
-	return true
 }
 
 func (svc *service) Remove(courseID int) bool {
@@ -141,3 +148,74 @@ func (svc *service) Remove(courseID int) bool {
 
 	return true
 }
+
+func (svc *service) ValidateInput(input dtos.InputCourse, fileHeader *multipart.FileHeader) ([]string, error) {
+	const (
+		minTitleLength      = 20
+		maxDescriptionLength = 2000
+		maxAuthorLength      = 30
+		maxFileSize          = 5 * 1024 * 1024
+	)
+
+	var errorList []string
+
+	if errMap := svc.validator.ValidateRequest(input); errMap != nil {
+		errorList = append(errorList, errMap...)
+	}
+
+	if len(input.Title) <= minTitleLength {
+		errorList = append(errorList, "title must be at least 20 characters")
+	}
+
+	if len(input.Description) >= maxDescriptionLength {
+		errorList = append(errorList, "description must be lower than 2000 characters")
+	}
+
+	if len(input.Author) >= maxAuthorLength {
+		errorList = append(errorList, "author must be lower than 30 characters")
+	}
+
+	if fileHeader != nil {
+		file, err := fileHeader.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+
+		buffer := make([]byte, 512)
+		_, err = file.Read(buffer)
+
+		if err != nil {
+			return nil, err
+		}
+
+		contentType := http.DetectContentType(buffer)
+		isVideo := isVideoContentType(contentType)
+
+		if !isVideo {
+			errorList = append(errorList, "file must be a video (mp4, avi, or any other video format)")
+		}
+
+		fileSize, err := io.CopyN(ioutil.Discard, file, maxFileSize+1)
+		if err != nil && err != io.EOF {
+			return nil, err
+		}
+
+		if fileSize > maxFileSize {
+			errorList = append(errorList, "file size exceeds the allowed limit (5MB)")
+		}
+	}
+
+	return errorList, nil
+}
+
+func isVideoContentType(contentType string) bool {
+	// Add more video formats if needed
+	switch contentType {
+	case "video/mp4":
+		return true
+	default:
+		return false
+	}
+}
+

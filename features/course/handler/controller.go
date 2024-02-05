@@ -95,8 +95,14 @@ func (ctl *controller) CreateCourse() echo.HandlerFunc {
 			}))
 		}
 
-		course, err := ctl.service.Create(input, userID.(int), fileHeader)
+		course, errMap, err := ctl.service.Create(input, userID.(int), fileHeader)
 
+		if errMap != nil {
+			return ctx.JSON(400, helpers.Response("missing some data", map[string]any{
+				"error": errMap,
+			}))
+		}
+		
 		if course == nil {
 			return ctx.JSON(500, helpers.Response("Something went Wrong!", nil))
 		}

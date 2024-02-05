@@ -23,7 +23,7 @@ type Repository interface {
 type Usecase interface {
 	FindAll(page, size int, search dtos.Search) ([]dtos.ResCourse, int64)
 	FindByID(courseID int) *dtos.ResCourse
-	Create(newCourse dtos.InputCourse,UserID int, file *multipart.FileHeader) (*dtos.ResCourse, error)
+	Create(newCourse dtos.InputCourse,UserID int, file *multipart.FileHeader) (*dtos.ResCourse,[]string, error)
 	Modify(courseData dtos.InputCourse, courseID int, file *multipart.FileHeader) bool
 	Remove(courseID int) bool
 }

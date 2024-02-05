@@ -36,6 +36,10 @@ func (svc *service) Register(newData dtos.InputUser) (*dtos.ResUser, []string, e
 		return nil, errMap, nil
 	}
 
+	if errorList, err := svc.ValidateInput(newData); err  != nil || len(errorList) > 0 {
+		return nil, errorList, err
+	}
+
 	newUser := auth.User{}
 	err := smapping.FillStruct(&newUser, smapping.MapFields(newData))
 	if err != nil {
@@ -46,7 +50,7 @@ func (svc *service) Register(newData dtos.InputUser) (*dtos.ResUser, []string, e
 	checkUser, _ := svc.model.SelectByUsername(newUser.Username)
 	if checkUser != nil {
 		logrus.Print("User already exists")
-		return nil, nil, errors.New("User already exists")
+		return nil, nil, errors.New("user already exists")
 	}
 
 	newUser.Password = svc.hash.HashPassword(newUser.Password)
@@ -122,4 +126,19 @@ func (svc *service) RefreshJWT(jwt dtos.RefreshJWT) (*dtos.ResJWT, error){
 	resJWT.RefreshToken = token["refresh_token"].(string)
 	
 	return &resJWT, nil
+}
+
+func (svc *service) ValidateInput( input dtos.InputUser) ([]string, error){
+	var errorList []string
+
+	if errMap := svc.validator.ValidateRequest(input); errMap != nil {
+		errorList = append(errorList, errMap...)
+	}
+	if len(input.Username) <= 5 {
+		errorList = append(errorList, "username must be at least 5 characters")
+	}
+	if input.ExpiryDate.Before(time.Now()){
+		errorList = append(errorList, "expiry date must be greater than today")
+	}
+	return errorList, nil
 }
