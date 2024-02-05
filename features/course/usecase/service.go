@@ -154,7 +154,7 @@ func (svc *service) ValidateInput(input dtos.InputCourse, fileHeader *multipart.
 		minTitleLength      = 20
 		maxDescriptionLength = 2000
 		maxAuthorLength      = 30
-		maxFileSize          = 5 * 1024 * 1024
+		maxFileSize          = 100 * 1024 * 1024
 	)
 
 	var errorList []string
