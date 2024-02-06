@@ -151,7 +151,7 @@ func (svc *service) Remove(courseID int) bool {
 
 func (svc *service) ValidateInput(input dtos.InputCourse, fileHeader *multipart.FileHeader) ([]string, error) {
 	const (
-		minTitleLength      = 20
+		minTitleLength      = 19
 		maxDescriptionLength = 2000
 		maxAuthorLength      = 30
 		maxFileSize          = 100 * 1024 * 1024
