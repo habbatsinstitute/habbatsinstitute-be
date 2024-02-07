@@ -24,7 +24,7 @@ type Repository interface {
 type Usecase interface {
 	FindAll(page, size int) ([]dtos.ResNews, int64) 
 	FindByID(newsID int) *dtos.ResNews
-	Create(newNews dtos.InputNews,UserID int, file *multipart.FileHeader) (*dtos.ResNews, error)
+	Create(newNews dtos.InputNews,UserID int, file *multipart.FileHeader) (*dtos.ResNews,[]string, error)
 	Modify(newsData dtos.InputNews, newsID int, file *multipart.FileHeader) bool
 	Remove(newsID int) bool
 	FindAllCategory() ([]dtos.ResCategory, error)

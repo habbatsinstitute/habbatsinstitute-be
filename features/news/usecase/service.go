@@ -5,7 +5,10 @@ import (
 	"institute/features/news"
 	"institute/features/news/dtos"
 	"institute/helpers"
+	"io"
+	"io/ioutil"
 	"mime/multipart"
+	"net/http"
 
 	"github.com/labstack/gommon/log"
 	"github.com/mashingan/smapping"
@@ -13,11 +16,13 @@ import (
 
 type service struct {
 	model news.Repository
+	validator helpers.ValidationInterface
 }
 
-func New(model news.Repository) news.Usecase {
+func New(model news.Repository, validator helpers.ValidationInterface) news.Usecase {
 	return &service {
 		model: model,
+		validator: validator,
 	}
 }
 
@@ -61,12 +66,15 @@ func (svc *service) FindByID(newsID int) *dtos.ResNews {
 	return &res
 }
 
-func (svc *service) Create(newNews dtos.InputNews,UserID int, file *multipart.FileHeader) (*dtos.ResNews, error) {
+func (svc *service) Create(newNews dtos.InputNews,UserID int, file *multipart.FileHeader) (*dtos.ResNews,[]string, error) {
 	news := news.News{}
-	
+
+	if errorList, err := svc.ValidateInput(newNews, file); err != nil || len(errorList) > 0 {
+		return nil, errorList, err
+	}
 	url, err := svc.model.UploadFile(file, "")
 	if err != nil {
-		return nil, errors.New("upload image failed")
+		return nil,nil, errors.New("upload image failed")
 	}
 
 	news.ID = helpers.NewGenerator().GenerateRandomID()
@@ -80,7 +88,7 @@ func (svc *service) Create(newNews dtos.InputNews,UserID int, file *multipart.Fi
 	result, err := svc.model.Insert(&news)
 	if err != nil {
 		log.Error(err)
-		return nil, errors.New("failed to create news")
+		return nil,nil, errors.New("failed to create news")
 	}
 
 	resNews := dtos.ResNews{}
@@ -91,7 +99,7 @@ func (svc *service) Create(newNews dtos.InputNews,UserID int, file *multipart.Fi
 	resNews.Title = result.Title
 	resNews.Images = result.Images
 
-	return &resNews, nil
+	return &resNews, nil,nil
 
 
 }
@@ -171,4 +179,59 @@ func (svc *service) SearchNews(title string) ([]dtos.ResNews, error) {
 	}
 
 	return resNewsList, nil
+}
+
+func (svc *service) ValidateInput(input dtos.InputNews, fileHeader *multipart.FileHeader) ([]string, error) {
+	const (
+		minTitleLength      = 19
+		maxDescriptionLength = 1999
+		maxFileSize          = 2 * 1024 * 1024
+	)
+
+	var errorList []string
+
+	if errMap := svc.validator.ValidateRequest(input); errMap != nil {
+		errorList = append(errorList, errMap...)
+	}
+
+	if len(input.Title) <= minTitleLength {
+		errorList = append(errorList, "title must be at least 20 characters")
+	}
+
+	if len(input.Description) >= maxDescriptionLength {
+		errorList = append(errorList, "description must be lower than 2000 characters")
+	}
+
+	if fileHeader != nil {
+		file, err := fileHeader.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+
+		buffer := make([]byte, 512)
+		_, err = file.Read(buffer)
+
+		if err != nil {
+			return nil, err
+		}
+
+		contentType := http.DetectContentType(buffer)
+		isImage := contentType[:5] == "image"
+
+		if !isImage {
+			errorList = append(errorList, "file must be image (png, jpg, or jpeg)")
+		}
+
+		fileSize, err := io.CopyN(ioutil.Discard, file, maxFileSize+1)
+		if err != nil && err != io.EOF {
+			return nil, err
+		}
+
+		if fileSize > maxFileSize {
+			errorList = append(errorList, "file size exceeds the allowed limit (2MB)")
+		}
+	}
+
+	return errorList, nil
 }

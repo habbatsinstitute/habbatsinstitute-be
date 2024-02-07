@@ -98,7 +98,13 @@ func (ctl *controller) CreateNews() echo.HandlerFunc {
 			}))
 		}
 
-		news, err := ctl.service.Create(input,userID.(int) ,filHeader)
+		news,errMap, err := ctl.service.Create(input,userID.(int),filHeader)
+		
+		if errMap != nil {
+			return ctx.JSON(400, helpers.Response("missing some data", map[string]any{
+				"error": errMap,
+			}))
+		}
 
 		if err != nil {
 			return errors.New("failed to create")

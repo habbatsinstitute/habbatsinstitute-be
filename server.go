@@ -96,11 +96,12 @@ func UserHandler() user.Handler {
 func NewsHandler() news.Handler {
 	config := config.InitConfig()
 	cdn := utils.CloudinaryInstance(*config)
+	validator := helpers.NewValidationRequest()
 
 	db := utils.InitDB()
 
 	repo := nr.New(db, cdn, config)
-	nc := nu.New(repo)
+	nc := nu.New(repo, validator)
 	return nh.New(nc)
 
 }
