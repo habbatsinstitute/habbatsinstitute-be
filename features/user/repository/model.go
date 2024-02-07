@@ -22,7 +22,7 @@ func (mdl *model) Paginate(page, size int) []user.User {
 
 	offset := (page - 1) * size
 
-	result := mdl.db.Offset(offset).Limit(size).Find(&users)
+	result := mdl.db.Offset(offset).Limit(size).Where("role_id = 1").Find(&users)
 	
 	if result.Error != nil {
 		log.Error(result.Error)
