@@ -151,8 +151,13 @@ func (svc *service) Remove(courseID int) bool {
 
 func (svc *service) ValidateInput(input dtos.InputCourse, fileHeader *multipart.FileHeader) ([]string, error) {
 	const (
+<<<<<<< Updated upstream
 		minTitleLength      = 19
 		maxDescriptionLength = 2000
+=======
+		minTitleLength      = 20
+		maxDescriptionLength = 499
+>>>>>>> Stashed changes
 		maxAuthorLength      = 30
 		maxFileSize          = 100 * 1024 * 1024
 	)
