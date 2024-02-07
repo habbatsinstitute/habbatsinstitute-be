@@ -3,8 +3,8 @@ package dtos
 import "time"
 
 type ResUser struct {
-	Username 	   string		`json:"username" form:"username"`	
-	Password       string		`json:"password" form:"password"`
+	Username 	   string		`json:"username" form:"username"`
+	ExpiryDate 	   time.Time	`json:"expiry_date" form:"expiry_date"`
 }
 
 type ResUpdateUser struct {
