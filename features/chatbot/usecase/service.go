@@ -48,22 +48,6 @@ func (svc *service) FindAllChat(userID int) []dtos.ResChatReply {
 	return res
 }
 
-func (svc *service) SetContentForNews(input dtos.InputMessage) (*dtos.ResNewsContent, []string, error) {
-	if errMap := svc.validation.ValidateRequest(input); errMap != nil {
-		return nil, errMap, errors.New("message must not be empty") 
-	}
-
-	reply, err := svc.openAI.GetNewsContent(input.Message)
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return &dtos.ResNewsContent{
-		Content: reply,
-	}, nil, nil
-}
-
 func (svc *service) SetReplyMessage(input dtos.InputMessage, userID int) (*dtos.ResChatReply, []string, error) {
 	if errMap := svc.validation.ValidateRequest(input); errMap != nil {
 		return nil, errMap, errors.New("message must not be empty") 
