@@ -52,15 +52,32 @@ func (svc *service) FindAll(page, size int, search dtos.Search) ([]dtos.ResCours
 	return courses, totalData
 }
 
+func (svc *service) IncrementViews(courseID int) error {
+	courseData := svc.model.SelectByID(courseID)
+	if courseData == nil {
+		return errors.New("course not found")
+	}
+	courseData.Views++
+
+	if rowsAffected := svc.model.Update(*courseData); rowsAffected <= 0 {
+		return errors.New("falied to update views")
+	}
+	return nil
+}
+
 func (svc *service) FindByID(courseID int) *dtos.ResCourse {
 	res := dtos.ResCourse{}
-	course := svc.model.SelectByID(courseID)
 
-	if course == nil {
+	if err := svc.IncrementViews(courseID); err != nil {
+		log.Error(err)
+	}
+	courseData := svc.model.SelectByID(courseID)
+
+	if courseData == nil {
 		return nil
 	}
 
-	err := smapping.FillStruct(&res, smapping.MapFields(course))
+	err := smapping.FillStruct(&res, smapping.MapFields(courseData))
 	if err != nil {
 		log.Error(err)
 		return nil
