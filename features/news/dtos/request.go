@@ -9,5 +9,5 @@ type InputNews struct {
 
 type Pagination struct {
 	Page int `query:"page"`
-	Size int `query:"size"`
+	Size int `query:"page_size"`
 }
