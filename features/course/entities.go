@@ -15,6 +15,7 @@ type Course struct {
 	Title			string	`gorm:"type:text"`
 	Description		string	`gorm:"type:text"`
 	Author			string	`gorm:"type:varchar(255)"`
+	Views 			int     `gorm:"type:int(11)"`
 	CourseCreatedAt	time.Time 
 }
 

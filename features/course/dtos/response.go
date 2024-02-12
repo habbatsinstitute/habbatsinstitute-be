@@ -9,5 +9,6 @@ type ResCourse struct {
 	Title           string    `json:"title" form:"title"`
 	Description     string    `json:"description" form:"description"`
 	Author          string    `json:"author" form:"author"`
+	Views       	int    	  `json:"views" form:"views"`
 	CourseCreatedAt time.Time `json:"created_at" form:"created_at"`
 }

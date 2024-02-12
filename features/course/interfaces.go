@@ -26,6 +26,7 @@ type Usecase interface {
 	Create(newCourse dtos.InputCourse,UserID int, file *multipart.FileHeader) (*dtos.ResCourse,[]string, error)
 	Modify(courseData dtos.InputCourse, courseID int, file *multipart.FileHeader) bool
 	Remove(courseID int) bool
+	IncrementViews(courseID int) error
 }
 
 type Handler interface {
