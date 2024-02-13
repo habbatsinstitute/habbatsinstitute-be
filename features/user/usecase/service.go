@@ -72,7 +72,9 @@ func (svc *service) ModifyUser(userData dtos.UpdateUser, UserID int) bool {
 	}
 
 	newData.ID = UserID
-	newData.Password = svc.hash.HashPassword(newData.Password)
+	if userData.Password != ""{
+		newData.Password = svc.hash.HashPassword(userData.Password)
+	}
 	rowsAffected := svc.model.Update(newData)
 
 	if rowsAffected <= 0 {
