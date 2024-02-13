@@ -5,7 +5,6 @@ type InputCourse struct {
 	Title       string `json:"title" form:"title"`
 	Description string `json:"description" form:"description"`
 	Author      string `json:"author" form:"author"`
-	Views       int    `json:"views" form:"views"`
 }
 
 type Pagination struct {

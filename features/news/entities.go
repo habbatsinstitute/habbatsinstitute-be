@@ -15,6 +15,7 @@ type News struct {
 	Images		string	`gorm:"type:text"`
 	Title		string	`gorm:"type:text"`
 	Description	string	`gorm:"type:text"`
+	Views		int		`gorm:"type:int(11)"`
 	NewsCreated time.Time 
 }
 
