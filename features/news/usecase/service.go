@@ -47,8 +47,27 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResNews, int64) {
 	return newss, totalData
 }
 
+func (svc *service) IncrementViews(courseID int) error {
+	courseData := svc.model.SelectByID(courseID)
+
+	if courseData == nil {
+		return errors.New("data not found")
+	}
+
+	courseData.Views++
+
+	if rowsAffected := svc.model.Update(*courseData); rowsAffected <= 0 {
+		return errors.New("failed to update views")
+	}
+	return nil
+}
+
 func (svc *service) FindByID(newsID int) *dtos.ResNews {
 	res := dtos.ResNews{}
+
+	if err := svc.IncrementViews(newsID); err != nil {
+		log.Error(err)
+	}
 	news := svc.model.SelectByID(newsID)
 
 	if news == nil {
@@ -62,6 +81,7 @@ func (svc *service) FindByID(newsID int) *dtos.ResNews {
 	res.NewsCreated = news.NewsCreated
 	res.Images = news.Images
 	res.UserID = news.UserID
+	res.Views = news.Views
 
 	return &res
 }

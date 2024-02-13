@@ -29,6 +29,7 @@ type Usecase interface {
 	Remove(newsID int) bool
 	FindAllCategory() ([]dtos.ResCategory, error)
 	SearchNews(title string) ([]dtos.ResNews, error)
+	IncrementViews(courseID int) error
 }
 
 type Handler interface {
