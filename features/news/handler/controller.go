@@ -201,7 +201,7 @@ func (ctl *controller) GetCategory() echo.HandlerFunc {
 
 func (ctl *controller) SearchNewsByTitle() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		title := ctx.Param("title")
+		title := ctx.QueryParam("title")
 		titles, err := ctl.service.SearchNews(title)
 		if err != nil {
 			return ctx.JSON(400, helpers.Response("not found"))
