@@ -47,6 +47,23 @@ func (svc *service) FindAll(page, size int) ([]dtos.ResNews, int64) {
 	return newss, totalData
 }
 
+func (svc *service) GetTopNews(size int) ([]dtos.ResNews) {
+	var newss []dtos.ResNews
+	newsEnt := svc.model.GetTopNews(size)
+
+	for _, news := range newsEnt {
+		var data dtos.ResNews
+
+		if err := smapping.FillStruct(&data, smapping.MapFields(news)); err != nil {
+			log.Error(err.Error())
+		} 
+		
+		newss = append(newss,data)
+	}
+
+	return newss
+}
+
 func (svc *service) IncrementViews(courseID int) error {
 	courseData := svc.model.SelectByID(courseID)
 

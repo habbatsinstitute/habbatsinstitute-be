@@ -55,6 +55,26 @@ func (ctl *controller) GetNews() echo.HandlerFunc {
 	}
 }
 
+func (ctl *controller) GetTopnews() echo.HandlerFunc {
+	return func (ctx echo.Context) error  {
+		pagination := dtos.Pagination{}
+
+		pagination.Size = 3
+		size := pagination.Size
+
+		newss := ctl.service.GetTopNews(size)
+
+		if newss == nil {
+			return ctx.JSON(404, helper.Response("there is no news", map[string]any{
+				"data": []string{},
+			}))
+		}
+		return ctx.JSON(200, helper.Response("succes", map[string]any{
+			"data": newss,
+		}))
+	}
+}
+
 
 func (ctl *controller) NewsDetails() echo.HandlerFunc {
 	return func (ctx echo.Context) error  {
