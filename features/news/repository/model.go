@@ -45,6 +45,19 @@ func (mdl *model) Paginate(page, size int) []news.News {
 	return news
 }
 
+func (mdl *model) GetTopNews(size int) []news.News {
+	var news []news.News
+
+	result := mdl.db.Order("views DESC").Limit(size).Find(&news)
+
+	if result.Error != nil {
+		log.Error(result.Error)
+		return nil
+	}
+
+	return news
+}
+
 func (mdl *model) Insert(newNews *news.News) (*news.News, error) {
 	result := mdl.db.Create(&newNews)
 

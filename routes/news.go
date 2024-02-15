@@ -15,6 +15,7 @@ func Newss(e *echo.Echo, handler news.Handler, jwt helpers.JWTInterface, config 
 	newss.POST("", handler.CreateNews(), m.AuthorizeJWT(jwt, 2, config.SECRET))
 	
 	newss.GET("/category", handler.GetCategory())
+	newss.GET("/trend", handler.GetTopnews())
 	newss.GET("/:id", handler.NewsDetails())
 	newss.GET("/searching", handler.SearchNewsByTitle())
 	newss.GET("", handler.GetNews())

@@ -10,6 +10,7 @@ import (
 
 type Repository interface {
 	Paginate(page, size int) []News
+	GetTopNews(size int) []News
 	Insert(newNews *News) (*News, error)
 	SelectByID(newsID int) *News
 	Update(news News) int64
@@ -30,6 +31,7 @@ type Usecase interface {
 	FindAllCategory() ([]dtos.ResCategory, error)
 	SearchNews(title string) ([]dtos.ResNews, error)
 	IncrementViews(courseID int) error
+	GetTopNews(size int) ([]dtos.ResNews)
 }
 
 type Handler interface {
@@ -40,4 +42,5 @@ type Handler interface {
 	DeleteNews() echo.HandlerFunc
 	GetCategory() echo.HandlerFunc
 	SearchNewsByTitle() echo.HandlerFunc
+	GetTopnews() echo.HandlerFunc
 }
