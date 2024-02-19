@@ -219,7 +219,7 @@ func (svc *service) ValidateInput(input dtos.InputCourse, fileHeader *multipart.
 		}
 
 		if fileSize > maxFileSize {
-			errorList = append(errorList, "file size exceeds the allowed limit (5MB)")
+			errorList = append(errorList, "file size exceeds the allowed limit (100MB)")
 		}
 	}
 
