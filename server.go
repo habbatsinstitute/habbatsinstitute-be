@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"institute/config"
 	"institute/features/auth"
+	"institute/features/chatbot"
 	"institute/features/course"
+	"institute/features/item"
 	"institute/features/news"
 	"institute/features/user"
 	"institute/helpers"
@@ -31,10 +33,13 @@ import (
 	nr "institute/features/news/repository"
 	nu "institute/features/news/usecase"
 
-	"institute/features/chatbot"
 	cbh "institute/features/chatbot/handler"
 	cbr "institute/features/chatbot/repository"
 	cbu "institute/features/chatbot/usecase"
+
+	ih "institute/features/item/handler"
+	ir "institute/features/item/repository"
+	iu "institute/features/item/usecase"
 )
 
 func main() {
@@ -117,4 +122,13 @@ func ChatbotHandler(cfg *config.ProgramConfig) chatbot.Handler {
 	repo := cbr.New(db, collection)
 	uc := cbu.New(repo, validation, openAI)
 	return cbh.New(uc)
+}
+
+func ItemHandler(cfg *config.ProgramConfig) item.Handler {
+	db := utils.InitDB()
+
+
+	repo := ir.New(db)
+	uc := iu.New(repo)
+	return ih.New(uc)
 }
