@@ -221,7 +221,7 @@ func (svc *service) SearchNews(title string) ([]dtos.ResNews, error) {
 func (svc *service) ValidateInput(input dtos.InputNews, fileHeader *multipart.FileHeader) ([]string, error) {
 	const (
 		minTitleLength      = 19
-		maxDescriptionLength = 1999
+		maxDescriptionLength = 4999
 		maxFileSize          = 2 * 1024 * 1024
 	)
 
