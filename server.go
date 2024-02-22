@@ -55,7 +55,7 @@ func main() {
 	routes.Chatbots(e, ChatbotHandler(cfg), jwtService, *cfg)
 
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello!")
+		return c.String(http.StatusOK, "Hello anjay mabar!")
 	})
 	e.Start(fmt.Sprintf(":%s", cfg.SERVER_PORT))
 }
