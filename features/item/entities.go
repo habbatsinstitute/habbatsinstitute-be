@@ -1,13 +1,10 @@
 package item
 
-import (
-	"gorm.io/gorm"
-)
-
 type Item struct {
-	gorm.Model
-
-	ID int `gorm:"type:int(11)"`
-	Name string `gorm:"type:varchar(255)"`
+	ID          int    `gorm:"type:int(11)"`
+	Name        string `gorm:"type:varchar(255)"`
+	Cat         string `gorm:"type:varchar(255)"`
+	Price       int    `gorm:"type:int(11)"`
+	Description string `gorm:"type:varchar(255)"`
+	Images      string `gorm:"type:text"`
 }
-

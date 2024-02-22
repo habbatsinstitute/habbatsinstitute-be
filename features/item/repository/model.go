@@ -56,7 +56,7 @@ func (mdl *model) SelectByID(itemID int) *item.Item {
 }
 
 func (mdl *model) Update(item item.Item) int64 {
-	result := mdl.db.Save(&item)
+	result := mdl.db.Updates(&item)
 
 	if result.Error != nil {
 		log.Error(result.Error)
