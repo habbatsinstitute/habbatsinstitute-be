@@ -8,6 +8,7 @@ import (
 	"institute/features/course"
 	"institute/features/item"
 	"institute/features/news"
+	"institute/features/realtime_chat"
 	"institute/features/user"
 	"institute/helpers"
 	"institute/middlewares"
@@ -40,6 +41,10 @@ import (
 	ih "institute/features/item/handler"
 	ir "institute/features/item/repository"
 	iu "institute/features/item/usecase"
+
+	rch "institute/features/realtime_chat/handler"
+	rcr "institute/features/realtime_chat/repository"
+	rcu "institute/features/realtime_chat/usecase"
 )
 
 func main() {
@@ -131,4 +136,12 @@ func ItemHandler(cfg *config.ProgramConfig) item.Handler {
 	repo := ir.New(db)
 	uc := iu.New(repo)
 	return ih.New(uc)
+}
+
+func RealtimeChatHandler(cfg *config.ProgramConfig) realtime_chat.Handler {
+	db := utils.InitDB()
+
+	repo := rcr.New(db)
+	uc := rcu.New(repo)
+	return rch.New(uc)
 }
