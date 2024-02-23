@@ -8,6 +8,7 @@ import (
 	"institute/features/course"
 	"institute/features/item"
 	"institute/features/news"
+	"institute/features/realtime_chat"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -31,7 +32,7 @@ func InitDB() *gorm.DB {
 }
 
 func migrate(db *gorm.DB) {
-	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{}, item.Item{})
+	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{}, item.Item{}, realtime_chat.Realtime_chat{})
 }
 
 func ConnectMongo() *mongo.Database {
