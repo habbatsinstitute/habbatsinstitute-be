@@ -148,3 +148,17 @@ func (ctl *controller) MyProfile() echo.HandlerFunc {
 		}))
 	}
 }
+
+
+func (ctl *controller) SearchNewsByUsername() echo.HandlerFunc{
+	return func(c echo.Context) error {
+		username := c.QueryParam("username")
+		usernames, err := ctl.service.SearchUsersByUsername(username)
+		if err != nil {
+			return c.JSON(400, helpers.Response("not found"))
+		}
+		return c.JSON(200, helpers.Response("succes", map[string]any{
+			"data": usernames,
+		}))
+	}
+}
