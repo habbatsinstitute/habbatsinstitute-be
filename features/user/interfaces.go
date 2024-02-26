@@ -12,6 +12,7 @@ type Repository interface {
 	Update(user User) int64
 	DeleteByID(userID int) int64
 	GetTotalDataUsers() int64
+	FindUsername(username string) []User
 }
 
 type Usecase interface {
@@ -20,6 +21,7 @@ type Usecase interface {
 	Remove(userID int) bool
 	ModifyUser(userData dtos.UpdateUser, UserID int) bool
 	MyProfile(UserID int) *dtos.ResMyProfile
+	SearchUsersByUsername(username string) ([]dtos.ResGetAllUsers, error)
 }
 
 type Handler interface {
@@ -28,4 +30,5 @@ type Handler interface {
 	DeleteUser() echo.HandlerFunc
 	UpdateExpiryAccount() echo.HandlerFunc
 	MyProfile() echo.HandlerFunc
+	SearchNewsByUsername() echo.HandlerFunc
 }

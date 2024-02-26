@@ -77,3 +77,15 @@ func (mdl *model) GetTotalDataUsers() int64 {
 	}
 	return totalData
 }
+
+func (mdl *model) FindUsername(username string) []user.User{
+	var users []user.User
+
+	result := mdl.db.Where("username LIKE ?", "%"+username+"%").Find(&users)
+
+	if result.Error != nil {
+		log.Error(result.Error)
+		return nil
+	}
+	return users
+}

@@ -113,3 +113,19 @@ func (svc *service) MyProfile(UserID int) *dtos.ResMyProfile {
 
 	return &res
 }
+
+func (svc *service) SearchUsersByUsername(username string) ([]dtos.ResGetAllUsers, error) {
+	usersList := svc.model.FindUsername(username)
+
+	resUsersList := make([]dtos.ResGetAllUsers, len(usersList))
+	for i, n := range usersList {
+		resUsersList[i] = dtos.ResGetAllUsers{
+			ID: n.ID,
+			Username: n.Username,
+			RoleID: n.RoleID,
+			ExpiryDate: n.ExpiryDate,
+		}
+	}
+	
+	return resUsersList, nil
+}

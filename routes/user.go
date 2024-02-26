@@ -20,4 +20,5 @@ func Users(e *echo.Echo, handler user.Handler, jwt helpers.JWTInterface, config 
 	users.DELETE("/:id", handler.DeleteUser(), m.AuthorizeJWT(jwt, 2, config.SECRET))
 
 	users.PUT("/update/:id", handler.UpdateExpiryAccount(), m.AuthorizeJWT(jwt, 3, config.SECRET))
+	users.GET("/find", handler.SearchNewsByUsername(), m.AuthorizeJWT(jwt, 2, config.SECRET))
 }
