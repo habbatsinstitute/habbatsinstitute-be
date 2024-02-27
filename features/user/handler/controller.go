@@ -152,13 +152,24 @@ func (ctl *controller) MyProfile() echo.HandlerFunc {
 
 func (ctl *controller) SearchNewsByUsername() echo.HandlerFunc{
 	return func(c echo.Context) error {
+		pagination := dtos.Pagination{}
+		c.Bind(&pagination)
+
+		if pagination.Page < 1 || pagination.Size < 1 {
+			pagination.Page = 1
+			pagination.Size = 5
+		}
+		page := pagination.Page
+		size := pagination.Size
 		username := c.QueryParam("username")
-		usernames, err := ctl.service.SearchUsersByUsername(username)
-		if err != nil {
+		usernames, totalData := ctl.service.SearchUsersByUsername(username, page, size)
+		if usernames == nil {
 			return c.JSON(400, helpers.Response("not found"))
 		}
+		paginationResponse := helpers.PaginationResponse(page, size, int(totalData))
 		return c.JSON(200, helpers.Response("succes", map[string]any{
 			"data": usernames,
+			"pagination": paginationResponse,
 		}))
 	}
 }

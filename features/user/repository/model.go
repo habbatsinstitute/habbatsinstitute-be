@@ -78,10 +78,16 @@ func (mdl *model) GetTotalDataUsers() int64 {
 	return totalData
 }
 
-func (mdl *model) FindUsername(username string) []user.User{
+func (mdl *model) FindUsername(username string, page, size int) []user.User{
 	var users []user.User
 
-	result := mdl.db.Where("username LIKE ?", "%"+username+"%").Find(&users)
+	offset := (page -1) * size
+
+	result := mdl.db.
+	Offset(offset).
+	Limit(size).
+	Where("username LIKE ?", "%"+username+"%").
+	Find(&users)
 
 	if result.Error != nil {
 		log.Error(result.Error)

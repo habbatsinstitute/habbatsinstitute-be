@@ -12,7 +12,7 @@ type Repository interface {
 	Update(user User) int64
 	DeleteByID(userID int) int64
 	GetTotalDataUsers() int64
-	FindUsername(username string) []User
+	FindUsername(username string, page, size int) []User
 }
 
 type Usecase interface {
@@ -21,7 +21,7 @@ type Usecase interface {
 	Remove(userID int) bool
 	ModifyUser(userData dtos.UpdateUser, UserID int) bool
 	MyProfile(UserID int) *dtos.ResMyProfile
-	SearchUsersByUsername(username string) ([]dtos.ResGetAllUsers, error)
+	SearchUsersByUsername(username string, page, size int) ([]dtos.ResGetAllUsers, int64)
 }
 
 type Handler interface {
