@@ -3,9 +3,12 @@ package helpers
 import (
 	"fmt"
 	"institute/config"
+	"net/http"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 )
 
@@ -126,4 +129,37 @@ func (j JWT) ValidateToken(token string, secret string) (*jwt.Token, error) {
 	}
 
 	return parsedToken, nil
+}
+
+
+func (j *JWT) GetID(c echo.Context) (int, error) {
+	authHeader := c.Request().Header.Get("Authorization")
+
+	token, err := j.ValidateToken(authHeader, os.Getenv("REFSECRET"))
+	if err != nil {
+		logrus.Info(err)
+		return 0, err
+	}
+
+	mapClaim := token.Claims.(jwt.MapClaims)
+	idFloat, ok := mapClaim["id"].(float64)
+	if !ok {
+		return 0, fmt.Errorf("ID not found or not a valid number")
+	}
+	return int(idFloat), nil
+}
+
+func (j *JWT) CheckID(c echo.Context) any {
+	authHeader := c.Request().Header.Get("Authorization")
+
+	token, err := j.ValidateToken(authHeader, os.Getenv("REFSECRET"))
+	if err != nil {
+		logrus.Info(err)
+		return c.JSON(http.StatusUnauthorized, Response("Token is not valid", nil))
+	}
+
+	mapClaim := token.Claims.(jwt.MapClaims)
+	id := mapClaim["id"]
+
+	return id
 }
