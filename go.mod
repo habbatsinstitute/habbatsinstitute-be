@@ -12,7 +12,7 @@ require (
 	github.com/labstack/gommon v0.4.2
 	github.com/mashingan/smapping v0.1.19
 	github.com/sirupsen/logrus v1.9.3
-	golang.org/x/crypto v0.19.0
+	golang.org/x/crypto v0.20.0
 	golang.org/x/net v0.21.0
 	gorm.io/driver/mysql v1.5.4
 	gorm.io/gorm v1.25.7
