@@ -16,8 +16,8 @@ type Protocol struct {
 func NewProtocol() *Protocol {
 	return &Protocol{
 		upgrader: &websocket.Upgrader{
-			ReadBufferSize:  4096,
-			WriteBufferSize: 4096,
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
 		},
 		dialer: websocket.DefaultDialer,
 	}
