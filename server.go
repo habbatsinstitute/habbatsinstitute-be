@@ -8,11 +8,13 @@ import (
 	"institute/features/course"
 	"institute/features/item"
 	"institute/features/news"
+	realtimechat "institute/features/realtime_chat"
 	"institute/features/user"
 	"institute/helpers"
 	"institute/middlewares"
 	"institute/routes"
 	"institute/utils"
+	"institute/utils/websocket"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -40,6 +42,9 @@ import (
 	ih "institute/features/item/handler"
 	ir "institute/features/item/repository"
 	iu "institute/features/item/usecase"
+
+	rch "institute/features/realtime_chat/handler"
+	rcu "institute/features/realtime_chat/usecase"
 )
 
 func main() {
@@ -53,6 +58,7 @@ func main() {
 	routes.Users(e, UserHandler(), jwtService, *cfg)
 	routes.Newss(e, NewsHandler(), jwtService, *cfg)
 	routes.Chatbots(e, ChatbotHandler(cfg), jwtService, *cfg)
+	routes.Chats(e, ChatHandler(cfg))
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello anjay mabar!")
@@ -131,4 +137,13 @@ func ItemHandler(cfg *config.ProgramConfig) item.Handler {
 	repo := ir.New(db)
 	uc := iu.New(repo)
 	return ih.New(uc)
+}
+
+func ChatHandler(cfg *config.ProgramConfig) realtimechat.Handler {
+	db := utils.InitDB()
+	socket := websocket.NewServer()
+	
+	userRepo := ur.New(db)
+	uc := rcu.New(socket, userRepo)
+	return rch.New(uc)
 }
