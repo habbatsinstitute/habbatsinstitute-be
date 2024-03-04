@@ -44,7 +44,6 @@ type DatabaseConfig struct {
 type MongoConfig struct {
 	MONGO_URI			string
 	MONGO_DB_NAME		string
-	MONGO_DB_NAME_CHAT  string
 }
 func LoadDBConfig() *DatabaseConfig {
 	var res = new(DatabaseConfig)
@@ -123,10 +122,6 @@ func LoadMongoConfig() *MongoConfig {
 
 	if val, found := os.LookupEnv("MONGO_DB_NAME"); found {
 		res.MONGO_DB_NAME = val
-	}
-
-	if val, found := os.LookupEnv("MONGO_DB_NAME_CHAT"); found {
-		res.MONGO_DB_NAME_CHAT = val
 	}
 
 	return res

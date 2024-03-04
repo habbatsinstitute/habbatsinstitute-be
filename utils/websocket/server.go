@@ -8,14 +8,14 @@ import (
 type Server struct {
 	clients     map[string]*Client
 	client_refs map[string]string
-	rooms       map[int]*Room
+	Rooms       map[int]*Room
 }
 
 func NewServer() *Server {
 	return &Server{
 		clients:     make(map[string]*Client),
 		client_refs: make(map[string]string),
-		rooms:       make(map[int]*Room),
+		Rooms:       make(map[int]*Room),
 	}
 }
 
@@ -25,11 +25,11 @@ func (s *Server) FindClient(ref string) *Client {
 }
 
 func (s *Server) FindRoom(sign int) *Room {
-	return s.rooms[sign]
+	return s.Rooms[sign]
 }
 
-func (s *Server) CreateClient(ctx echo.Context, user int, role string, roomId int) string {
-	ref, client := NewClient(ctx, s, user, role, roomId)
+func (s *Server) CreateClient(ctx echo.Context, user int, role int) string {
+	ref, client := NewClient(ctx, s, user, role)
 	s.clients[client.sign] = client
 	s.client_refs[ref] = client.sign
 	go s.clients[client.sign].Send()
@@ -37,20 +37,20 @@ func (s *Server) CreateClient(ctx echo.Context, user int, role string, roomId in
 	return client.sign
 }
 
-func (s *Server) CreateRoom(sign int, refs ...string) *Room {
+func (s *Server) CreateRoom(id int, sign int, refs ...string) *Room {
 	clients := func() (buffer []*Client) {
 		for _, ref := range refs {
 			buffer = append(buffer, s.FindClient(ref))
 		}
 		return buffer
 	}()
-	s.rooms[sign] = NewRoom(sign, clients...)
-	go s.rooms[sign].Listen()
-	return s.rooms[sign]
+	s.Rooms[sign] = NewRoom(id, sign, clients...)
+	go s.Rooms[sign].Listen()
+	return s.Rooms[sign]
 }
 
 func (s *Server) JoinRoom(sign int, ref string) {
-	s.rooms[sign].join <- s.FindClient(ref)
+	s.Rooms[sign].join <- s.FindClient(ref)
 }
 
 func (s *Server) DeleteClient(sign string) {
@@ -62,12 +62,12 @@ func (s *Server) DeleteClient(sign string) {
 }
 
 func (s *Server) DeleteRoom(sign int) {
-	for client := range s.rooms[sign].clients {
+	for client := range s.Rooms[sign].clients {
 		logrus.Infof("[ws.server]: client@%s keluar dari room %d", client.sign, sign)
-		s.rooms[sign].leave <- client
+		s.Rooms[sign].leave <- client
 	}
 	// close(s.rooms[sign].join)
 	// close(s.rooms[sign].leave)
-	close(s.rooms[sign].message)
-	delete(s.rooms, sign)
+	close(s.Rooms[sign].message)
+	delete(s.Rooms, sign)
 }

@@ -44,6 +44,7 @@ import (
 	iu "institute/features/item/usecase"
 
 	rch "institute/features/realtime_chat/handler"
+	rcr "institute/features/realtime_chat/repository"
 	rcu "institute/features/realtime_chat/usecase"
 )
 
@@ -141,9 +142,11 @@ func ItemHandler(cfg *config.ProgramConfig) item.Handler {
 
 func ChatHandler(cfg *config.ProgramConfig) realtimechat.Handler {
 	db := utils.InitDB()
+	mongoDB := utils.ConnectMongo()
+	collection := mongoDB.Collection("private_chat_histories")
 	socket := websocket.NewServer()
 	
-	userRepo := ur.New(db)
+	userRepo := rcr.New(db, collection)
 	uc := rcu.New(socket, userRepo)
 	return rch.New(uc)
 }

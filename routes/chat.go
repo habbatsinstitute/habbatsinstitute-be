@@ -7,5 +7,8 @@ import (
 )
 
 func Chats(e *echo.Echo, handler realtimechat.Handler) {
-	e.GET("/chats/:id/:role_id/:room", handler.Establish())
+	e.GET("/chats/:id/:role_id", handler.Establish())
+
+	rooms := e.Group("/rooms")
+	rooms.GET("", handler.GetRooms())
 }

@@ -9,6 +9,7 @@ import (
 )
 
 type Room struct {
+	ID	int
 	clients map[*Client]bool
 	join    chan *Client
 	leave   chan *Client
@@ -16,8 +17,9 @@ type Room struct {
 	sign    int
 }
 
-func NewRoom(sign int, clients ...*Client) *Room {
+func NewRoom(id int, sign int, clients ...*Client) *Room {
 	room := &Room{
+		ID: id,
 		clients: func() map[*Client]bool {
 			buffer := make(map[*Client]bool)
 			for _, client := range clients {
@@ -53,8 +55,8 @@ func (r *Room) Foward(message *packet.Message) {
 			fmt.Println(err.Error())
 		}
 		ref := strings.Split(string(result), "@")
-		role := ref[0]
-		if message.Role == role {
+		role, _ := strconv.Atoi(ref[0])
+		if message.Role == role { 
 			continue
 		}
 		sign, err := strconv.Atoi(ref[1])
