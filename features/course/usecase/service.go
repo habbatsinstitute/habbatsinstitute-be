@@ -171,7 +171,7 @@ func (svc *service) ValidateInput(input dtos.InputCourse, fileHeader *multipart.
 		minTitleLength      = 19
 		maxDescriptionLength = 1999
 		maxAuthorLength      = 30
-		maxFileSize          = 100 * 1024 * 1024
+		maxFileSize          = 300 * 1024 * 1024
 	)
 
 	var errorList []string
@@ -210,7 +210,7 @@ func (svc *service) ValidateInput(input dtos.InputCourse, fileHeader *multipart.
 		isVideo := isVideoContentType(contentType)
 
 		if !isVideo {
-			errorList = append(errorList, "file must be a video (mp4, avi, or any other video format)")
+			errorList = append(errorList, "file must be a video (mp4)")
 		}
 
 		fileSize, err := io.CopyN(ioutil.Discard, file, maxFileSize+1)
@@ -219,7 +219,7 @@ func (svc *service) ValidateInput(input dtos.InputCourse, fileHeader *multipart.
 		}
 
 		if fileSize > maxFileSize {
-			errorList = append(errorList, "file size exceeds the allowed limit (100MB)")
+			errorList = append(errorList, "file size exceeds the allowed limit (300MB)")
 		}
 	}
 
