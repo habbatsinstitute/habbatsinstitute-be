@@ -27,17 +27,17 @@ func (h *Chathandler) Establish() echo.HandlerFunc {
 			return ctx.JSON(http.StatusBadRequest, helpers.Response(err.Error()))
 		}
 		
-		role := ctx.Param("role_id")
-		if role == "" {
+		role, _ := strconv.Atoi(ctx.Param("role_id"))
+		if role == 0 {
 			return ctx.JSON(http.StatusBadRequest, helpers.Response(err.Error()))
 		}
 
-		room, err := strconv.Atoi(ctx.Param("room"))
-		if err != nil {
+		roomId, _ := strconv.Atoi(ctx.QueryParam("room_id"))
+		if roomId == 0 {
 			return ctx.JSON(http.StatusBadRequest, helpers.Response(err.Error()))
 		}
 
-		h.service.SocketEstablish(ctx, user, role, room)
+		h.service.SocketEstablish(ctx, user, role, roomId)
 		if msg := ctx.Get("ws.client.error"); msg != nil {
 			logrus.Infof("[ws.establish]: %v not found", user)
 			response := helpers.Response("not found", map[string]any{
@@ -49,5 +49,19 @@ func (h *Chathandler) Establish() echo.HandlerFunc {
 			logrus.Infof("[ws.establish]: client@%s connected", client)
 		}
 		return nil
+	}
+}
+
+func (h *Chathandler) GetRooms() echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		
+		rooms := h.service.GetRooms()
+		if rooms == nil {
+			return ctx.JSON(404, helpers.Response("There is No Rooms!"))
+		}
+
+		return ctx.JSON(200, helpers.Response("Success!", map[string]any {
+			"data": rooms,
+		}))
 	}
 }
