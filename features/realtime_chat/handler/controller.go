@@ -2,6 +2,7 @@ package handler
 
 import (
 	realtimechat "institute/features/realtime_chat"
+	"institute/features/realtime_chat/dtos"
 	"institute/helpers"
 	"net/http"
 	"strconv"
@@ -27,15 +28,15 @@ func (h *Chathandler) Establish() echo.HandlerFunc {
 			return ctx.JSON(http.StatusBadRequest, helpers.Response(err.Error()))
 		}
 		
-		role, _ := strconv.Atoi(ctx.Param("role_id"))
-		if role == 0 {
+		role := ctx.Param("role")
+		if role == "" {
 			return ctx.JSON(http.StatusBadRequest, helpers.Response(err.Error()))
 		}
 
 		roomId, _ := strconv.Atoi(ctx.QueryParam("room_id"))
-		if roomId == 0 {
-			return ctx.JSON(http.StatusBadRequest, helpers.Response(err.Error()))
-		}
+		// if roomId == 0 {
+		// 	return ctx.JSON(http.StatusBadRequest, helpers.Response(err.Error()))
+		// }
 
 		h.service.SocketEstablish(ctx, user, role, roomId)
 		if msg := ctx.Get("ws.client.error"); msg != nil {
@@ -62,6 +63,49 @@ func (h *Chathandler) GetRooms() echo.HandlerFunc {
 
 		return ctx.JSON(200, helpers.Response("Success!", map[string]any {
 			"data": rooms,
+		}))
+	}
+}
+
+func (h *Chathandler) GetRoomBySenderId() echo.HandlerFunc {
+	return func (ctx echo.Context) error  {
+		senderId := ctx.Get("user_id").(int)
+
+		if senderId == 0 {
+			return ctx.JSON(400, helpers.Response("User ID not found!"))
+		}
+
+		room := h.service.GetRoomBySenderId(senderId)
+
+		if room == nil {
+			return ctx.JSON(404, helpers.Response("Room Not Found!"))
+		}
+
+		return ctx.JSON(200, helpers.Response("Success!", map[string]any {
+			"data": room,
+		}))
+	}
+}
+
+func (h *Chathandler) SaveChat() echo.HandlerFunc{
+	return func(ctx echo.Context) error {
+		input := dtos.Request{}
+		
+		ctx.Bind(&input)
+		userID := 0
+
+		if ctx.Get("user_id") != nil {
+			userID = ctx.Get("user_id").(int)
+		}
+
+		chat := h.service.SaveChat(ctx, input, userID)
+		
+		if chat == nil {
+			return ctx.JSON(500, helpers.Response("Something went Wrong!", nil))
+		}
+
+		return ctx.JSON(200, helpers.Response("succes!", map[string]any{
+			"data": chat,
 		}))
 	}
 }

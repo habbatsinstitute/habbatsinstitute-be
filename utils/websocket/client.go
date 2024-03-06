@@ -20,9 +20,9 @@ type Client struct {
 	sign    string
 }
 
-func NewClient(context echo.Context, server *Server, user int, role int,) (string, *Client) {
+func NewClient(context echo.Context, server *Server, user int, role string,) (string, *Client) {
 	var (
-		format = fmt.Sprintf("%d@%d", role, user)
+		format = fmt.Sprintf("%s@%d", role, user)
 		sign   = base64.RawStdEncoding.EncodeToString([]byte(format))
 	)
 	return format, &Client{

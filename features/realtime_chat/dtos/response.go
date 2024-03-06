@@ -1,9 +1,13 @@
 package dtos
 
-import "time"
+import (
+	"time"
+)
 
 type RoomRes struct {
 	RoomId int `json:"room_id"`
+	SenderName string `json:"sender_name"`
+	SenderId int `json:"sender_id"`
 }
 
 type ChatRes struct {

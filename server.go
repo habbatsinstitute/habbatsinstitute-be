@@ -59,7 +59,7 @@ func main() {
 	routes.Users(e, UserHandler(), jwtService, *cfg)
 	routes.Newss(e, NewsHandler(), jwtService, *cfg)
 	routes.Chatbots(e, ChatbotHandler(cfg), jwtService, *cfg)
-	routes.Chats(e, ChatHandler(cfg))
+	routes.Chats(e, ChatHandler(cfg), jwtService, *cfg)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello anjay mabar!")
@@ -145,8 +145,9 @@ func ChatHandler(cfg *config.ProgramConfig) realtimechat.Handler {
 	mongoDB := utils.ConnectMongo()
 	collection := mongoDB.Collection("private_chat_histories")
 	socket := websocket.NewServer()
+	generator := helpers.NewGenerator()
 	
 	userRepo := rcr.New(db, collection)
-	uc := rcu.New(socket, userRepo)
+	uc := rcu.New(socket, userRepo, generator)
 	return rch.New(uc)
 }

@@ -1,6 +1,8 @@
 package websocket
 
 import (
+	realtimechat "institute/features/realtime_chat"
+
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 )
@@ -24,11 +26,11 @@ func (s *Server) FindClient(ref string) *Client {
 	return s.clients[sign]
 }
 
-func (s *Server) FindRoom(sign int) *Room {
-	return s.Rooms[sign]
+func (s *Server) FindRoom(roomId int) *Room {
+	return s.Rooms[roomId]
 }
 
-func (s *Server) CreateClient(ctx echo.Context, user int, role int) string {
+func (s *Server) CreateClient(ctx echo.Context, user int, role string) string {
 	ref, client := NewClient(ctx, s, user, role)
 	s.clients[client.sign] = client
 	s.client_refs[ref] = client.sign
@@ -37,20 +39,20 @@ func (s *Server) CreateClient(ctx echo.Context, user int, role int) string {
 	return client.sign
 }
 
-func (s *Server) CreateRoom(id int, sign int, refs ...string) *Room {
+func (s *Server) CreateRoom(roomId int, user realtimechat.User, refs ...string) *Room {
 	clients := func() (buffer []*Client) {
 		for _, ref := range refs {
 			buffer = append(buffer, s.FindClient(ref))
 		}
 		return buffer
 	}()
-	s.Rooms[sign] = NewRoom(id, sign, clients...)
-	go s.Rooms[sign].Listen()
-	return s.Rooms[sign]
+	s.Rooms[roomId] = NewRoom(roomId, user, clients...)
+	go s.Rooms[roomId].Listen()
+	return s.Rooms[roomId]
 }
 
-func (s *Server) JoinRoom(sign int, ref string) {
-	s.Rooms[sign].join <- s.FindClient(ref)
+func (s *Server) JoinRoom(roomId int, ref string) {
+	s.Rooms[roomId].join <- s.FindClient(ref)
 }
 
 func (s *Server) DeleteClient(sign string) {
@@ -61,13 +63,13 @@ func (s *Server) DeleteClient(sign string) {
 	delete(s.clients, sign)
 }
 
-func (s *Server) DeleteRoom(sign int) {
-	for client := range s.Rooms[sign].clients {
-		logrus.Infof("[ws.server]: client@%s keluar dari room %d", client.sign, sign)
-		s.Rooms[sign].leave <- client
+func (s *Server) DeleteRoom(roomId int) {
+	for client := range s.Rooms[roomId].clients {
+		logrus.Infof("[ws.server]: client@%s keluar dari room %d", client.sign, roomId)
+		s.Rooms[roomId].leave <- client
 	}
-	// close(s.rooms[sign].join)
-	// close(s.rooms[sign].leave)
-	close(s.Rooms[sign].message)
-	delete(s.Rooms, sign)
+	// close(s.Rooms[roomid].join)
+	// close(s.Rooms[roomid].leave)
+	close(s.Rooms[roomId].message)
+	delete(s.Rooms, roomId)
 }

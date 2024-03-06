@@ -14,11 +14,15 @@ type Repository interface {
 }
 
 type Usecase interface {
-	SocketEstablish(ctx echo.Context, userId int, role int, roomId int)
+	SocketEstablish(ctx echo.Context, userId int, role string, roomId int)
 	GetRooms() []dtos.RoomRes
+	GetRoomBySenderId(senderId int) *dtos.RoomRes
+	SaveChat(ctx echo.Context, req dtos.Request, userID int) *dtos.ChatRes
 }
 
 type Handler interface {
 	Establish() echo.HandlerFunc
 	GetRooms() echo.HandlerFunc
+	GetRoomBySenderId() echo.HandlerFunc
+	SaveChat() echo.HandlerFunc
 }
