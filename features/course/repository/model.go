@@ -92,7 +92,7 @@ func (mdl *model) DeleteByID(courseID int) int64 {
 func (mdl *model) UploadFile(fileHeader *multipart.FileHeader, name string) (string, error){
 	file := helpers.OpenFileHeader(fileHeader)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
 	defer cancel()
 	cfg := mdl.config.CDN_FOLDER_COURSE
 
