@@ -6,6 +6,7 @@ import (
 	"institute/config"
 	"institute/features/auth"
 	"institute/features/course"
+	"institute/features/ebook"
 	"institute/features/item"
 	"institute/features/news"
 
@@ -31,7 +32,7 @@ func InitDB() *gorm.DB {
 }
 
 func migrate(db *gorm.DB) {
-	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{}, item.Item{})
+	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{}, item.Item{}, ebook.Ebook{})
 }
 
 func ConnectMongo() *mongo.Database {

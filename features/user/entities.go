@@ -2,6 +2,7 @@ package user
 
 import (
 	"institute/features/course"
+	"institute/features/ebook"
 	"institute/features/news"
 	"time"
 
@@ -21,5 +22,6 @@ type User struct {
 	Course 		[]course.Course 	`gorm:"foreignKey:UserID;references:ID"`
 	News 		[]news.News		 	`gorm:"foreignKey:UserID;references:ID"`
 	Category 	[]news.Category 	`gorm:"foreignKey:UserID;references:ID"`
+	Ebooks		[]ebook.Ebook		`gorm:"foreignKey:UserID;references:ID"`
 }
 

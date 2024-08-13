@@ -6,6 +6,7 @@ import (
 	"institute/features/auth"
 	"institute/features/chatbot"
 	"institute/features/course"
+	"institute/features/ebook"
 	"institute/features/item"
 	"institute/features/news"
 	realtimechat "institute/features/realtime_chat"
@@ -46,6 +47,10 @@ import (
 	rch "institute/features/realtime_chat/handler"
 	rcr "institute/features/realtime_chat/repository"
 	rcu "institute/features/realtime_chat/usecase"
+
+	eh "institute/features/ebook/handler"
+	er "institute/features/ebook/repository"
+	eu "institute/features/ebook/usecase"
 )
 
 func main() {
@@ -60,6 +65,7 @@ func main() {
 	routes.Newss(e, NewsHandler(), jwtService, *cfg)
 	routes.Chatbots(e, ChatbotHandler(cfg), jwtService, *cfg)
 	routes.Chats(e, ChatHandler(cfg))
+	routes.Ebooks(e, EbookHandler(), jwtService, *cfg)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello anjay mabar!")
@@ -116,6 +122,18 @@ func NewsHandler() news.Handler {
 	nc := nu.New(repo, validator)
 	return nh.New(nc)
 
+}
+
+func EbookHandler() ebook.Handler{
+	config := config.InitConfig()
+	cdn := utils.CloudinaryInstance(*config)
+	validator := helpers.NewValidationRequest()
+
+	db := utils.InitDB()
+
+	repo := er.New(db, cdn, config)
+	nc := eu.New(repo, validator)
+	return eh.New(nc)
 }
 
 func ChatbotHandler(cfg *config.ProgramConfig) chatbot.Handler {
