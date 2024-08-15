@@ -34,6 +34,6 @@ type Handler interface {
 	GetEbooks() echo.HandlerFunc
 	EbookDetails() echo.HandlerFunc
 	CreateEbook() echo.HandlerFunc
-	// UpdateEbook() echo.HandlerFunc
+	UpdateEbook() echo.HandlerFunc
 	DeleteEbook() echo.HandlerFunc
 }

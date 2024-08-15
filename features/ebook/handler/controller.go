@@ -34,7 +34,8 @@ func (ctl *controller) GetEbooks() echo.HandlerFunc {
 		size := pagination.Size
 
 		if page <= 0 || size <= 0 {
-			return ctx.JSON(400, helper.Response("Please provide query `page` and `size` in number!"))
+			page = 1
+			size = 5
 		}
 
 		ebooks := ctl.service.FindAll(page, size)
@@ -107,43 +108,58 @@ func (ctl *controller) CreateEbook() echo.HandlerFunc {
 	}
 }
 
-// func (ctl *controller) UpdateEbook() echo.HandlerFunc {
-// 	return func (ctx echo.Context) error {
-// 		input := dtos.InputEbook{}
+func (ctl *controller) UpdateEbook() echo.HandlerFunc {
+	return func (ctx echo.Context) error {
+		input := dtos.InputEbook{}
 
-// 		ebookID, errParam := strconv.Atoi(ctx.Param("id"))
+		fileHeader, err := ctx.FormFile("ebook")
 
-// 		if errParam != nil {
-// 			return ctx.JSON(400, helper.Response(errParam.Error()))
-// 		}
+		if err  != nil {
+			return ctx.JSON(400, helper.Response("Bad Request!", map[string]any {
+				"error ebook": err,
+			}))
+		}
+		thumbnailFileHeader, err := ctx.FormFile("thumbnail_book")
 
-// 		ebook := ctl.service.FindByID(ebookID)
+		// if err  != nil {
+		// 	return ctx.JSON(400, helper.Response("Bad Request!", map[string]any {
+		// 		"error thumbnail book": err,
+		// 	}))
+		// }
 
-// 		if ebook == nil {
-// 			return ctx.JSON(404, helper.Response("Ebook Not Found!"))
-// 		}
+		ebookID, errParam := strconv.Atoi(ctx.Param("id"))
+
+		if errParam != nil {
+			return ctx.JSON(400, helper.Response(errParam.Error()))
+		}
+
+		ebook := ctl.service.FindByID(ebookID)
+
+		if ebook == nil {
+			return ctx.JSON(404, helper.Response("Ebook Not Found!"))
+		}
 		
-// 		ctx.Bind(&input)
+		ctx.Bind(&input)
 
-// 		validate = validator.New(validator.WithRequiredStructEnabled())
-// 		err := validate.Struct(input)
+		validate = validator.New(validator.WithRequiredStructEnabled())
+		err = validate.Struct(input)
 
-// 		if err != nil {
-// 			errMap := helpers.ErrorMapValidation(err)
-// 			return ctx.JSON(400, helper.Response("Bad Request!", map[string]any {
-// 				"error": errMap,
-// 			}))
-// 		}
+		if err != nil {
+			errMap := helpers.ErrorMapValidation(err)
+			return ctx.JSON(400, helper.Response("Bad Request!", map[string]any {
+				"error": errMap,
+			}))
+		}
 
-// 		update := ctl.service.Modify(input, ebookID)
+		update := ctl.service.Modify(input, ebookID, fileHeader, thumbnailFileHeader)
 
-// 		if !update {
-// 			return ctx.JSON(500, helper.Response("Something Went Wrong!"))
-// 		}
+		if !update {
+			return ctx.JSON(500, helper.Response("Something Went Wrong!"))
+		}
 
-// 		return ctx.JSON(200, helper.Response("Ebook Success Updated!"))
-// 	}
-// }
+		return ctx.JSON(200, helper.Response("Ebook Success Updated!"))
+	}
+}
 
 func (ctl *controller) DeleteEbook() echo.HandlerFunc {
 	return func (ctx echo.Context) error  {
