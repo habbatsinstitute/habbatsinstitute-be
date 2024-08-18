@@ -3,10 +3,10 @@ package dtos
 type InputEbook struct {
 	Ebook string `json:"ebook" form:"ebook"`
 	ThumbnailBook string `json:"thumbnail_book" form:"thumbnail_book"`
-	Genre string `json"genre" form:"genre"`
-	Title string `json"title" form:"title"`
-	Description string `json"description" form:"description"`
-	Author string `json"author" form:"author"`
+	GenreEbook string `json:"genre" form:"genre"`
+	TitleEbook string `json:"title" form:"title"`
+	DescriptionEbook string `json:"description" form:"description"`
+	AuthorEbook string `json:"author" form:"author"`
 }
 
 type Pagination struct {

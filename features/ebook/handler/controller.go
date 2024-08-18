@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"institute/helpers"
 	helper "institute/helpers"
 	"strconv"
@@ -102,6 +103,7 @@ func (ctl *controller) CreateEbook() echo.HandlerFunc {
 		if ebook == nil {
 			return ctx.JSON(500, helpers.Response("something went wrong!", nil))
 		}
+		fmt.Println("data: ", ebook)
 		return ctx.JSON(200, helpers.Response("succes", map[string]any{
 			"data":ebook,
 		}))
