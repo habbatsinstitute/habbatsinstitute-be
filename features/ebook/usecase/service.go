@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"institute/features/ebook"
 	"institute/features/ebook/dtos"
 	"institute/helpers"
@@ -62,7 +63,7 @@ func (svc *service) FindByID(ebookID int) *dtos.ResEbook {
 }
 
 func (svc *service) Create(newEbook dtos.InputEbook,UserID int, file *multipart.FileHeader, thumbnail *multipart.FileHeader) (*dtos.ResEbook, []string, error) {
-	ebook:= ebook.Ebook{}
+	ebook := ebook.Ebook{}
 
 	if errorList, err := svc.ValidateInput(newEbook, file); err != nil || len(errorList) > 0 {
 		return nil, errorList, err
@@ -81,10 +82,10 @@ func (svc *service) Create(newEbook dtos.InputEbook,UserID int, file *multipart.
 	ebook.UserID = UserID
 	ebook.ThumbnailBook = urlThumbnail
 	ebook.Ebook = urlFile
-	ebook.Title = newEbook.Title
-	ebook.Description = newEbook.Description
-	ebook.Genre = newEbook.Genre
-	ebook.Author = newEbook.Author
+	ebook.TitleEbook = newEbook.TitleEbook
+	ebook.DescriptionEbook = newEbook.DescriptionEbook
+	ebook.GenreEbook = newEbook.GenreEbook
+	ebook.AuthorEbook = newEbook.AuthorEbook
 	ebook.BookCreated = svc.model.GetTimeNow()
 
 	result, err := svc.model.Insert(&ebook)
@@ -97,10 +98,12 @@ func (svc *service) Create(newEbook dtos.InputEbook,UserID int, file *multipart.
 	resEboook.ID = result.ID
 	resEboook.Ebook = result.Ebook
 	resEboook.ThumbnailBook = result.ThumbnailBook
-	resEboook.Title = result.Title
-	resEboook.Description = result.Description
-	resEboook.Genre = result.Genre
-	resEboook.Author = result.Author
+	resEboook.TitleEbook = result.TitleEbook
+	resEboook.DescriptionEbook = result.DescriptionEbook
+	resEboook.GenreEbook = result.GenreEbook
+	resEboook.AuthorEbook = result.AuthorEbook
+
+	fmt.Println("services: insert data: ", &resEboook)
 
 	return &resEboook, nil, nil
 }
@@ -129,10 +132,10 @@ func (svc *service) Modify(ebookData dtos.InputEbook, ebookID int, file *multipa
 
 	newEbook := ebook.Ebook{
 		ID: ebookID,
-		Genre: ebookData.Genre,
-		Description: ebookData.Description,
-		Author: ebookData.Author,
-		Title: ebookData.Author,
+		GenreEbook: ebookData.GenreEbook,
+		DescriptionEbook: ebookData.DescriptionEbook,
+		AuthorEbook: ebookData.AuthorEbook,
+		TitleEbook: ebookData.TitleEbook,
 	}
 	if file != nil {
 		newEbook.Ebook = urlFile
@@ -176,13 +179,13 @@ func (svc *service) ValidateInput(input dtos.InputEbook, fileHeader *multipart.F
 		errorList = append(errorList, errMap...)
 	}
 
-	if len(input.Title ) >= minTitleLength {
+	if len(input.TitleEbook ) <= minTitleLength {
 		errorList = append(errorList, "Title must be at least 20 characters")
 	}
-	if len(input.Description) >= maxDescriptionLength {
+	if len(input.DescriptionEbook) >= maxDescriptionLength {
 		errorList = append(errorList, "description maximum length must be at least 5000 characters")
 	}
-	if len(input.Author) >= maxAuthorLength {
+	if len(input.AuthorEbook) >= maxAuthorLength {
 		errorList = append(errorList, "author maximum length must be at least 30 characters")
 	}
 	if fileHeader != nil {

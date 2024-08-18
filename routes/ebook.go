@@ -13,10 +13,10 @@ import (
 func Ebooks(e *echo.Echo, handler ebook.Handler, jwt helpers.JWTInterface, config config.ProgramConfig) {
 	ebooks := e.Group("/ebooks")
 
-	ebooks.GET("", handler.GetEbooks(), m.AuthorizeJWT(jwt, 3, config.SECRET))
+	ebooks.GET("", handler.GetEbooks())
 	ebooks.POST("", handler.CreateEbook(), m.AuthorizeJWT(jwt, 3, config.SECRET))
 	
 	ebooks.GET("/:id", handler.EbookDetails())
 	ebooks.PUT("/:id", handler.UpdateEbook(), m.AuthorizeJWT(jwt, 3, config.SECRET))
-	ebooks.DELETE("/:id", handler.DeleteEbook(),)
+	ebooks.DELETE("/:id", handler.DeleteEbook(), m.AuthorizeJWT(jwt, 3, config.SECRET))
 }

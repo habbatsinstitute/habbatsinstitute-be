@@ -13,10 +13,10 @@ type Ebook struct {
 	UserID int `gorm:"type:int(11)"`
 	Ebook string `gorm:"type:text"`
 	ThumbnailBook string `gorm:"type:text"`
-	Genre string `gorm:"type:varchar(255)"`
-	Title string `gorm:"type:varchar(255)"`
-	Description string `gorm:"type:varchar(255)"`
-	Author string `gorm:"type:varchar(255)"`
+	GenreEbook string `gorm:"type:varchar(255)"`
+	TitleEbook string `gorm:"type:varchar(255)"`
+	DescriptionEbook string `gorm:"type:varchar(255)"`
+	AuthorEbook string `gorm:"type:varchar(255)"`
 	BookCreated time.Time
 }
 
