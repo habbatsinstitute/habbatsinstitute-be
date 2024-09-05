@@ -10,6 +10,7 @@ type Product struct {
 	gorm.Model
 
 	ID int `gorm:"type:int(11)"`
+	UserID int `gorm:"type:int(11)"`
 	Name string `gorm:"type:varchar(255)"`
 	Images string `gorm:"type:varchar(255)"`
 	Description string `gorm:"type:varchar(255)"`
@@ -17,8 +18,8 @@ type Product struct {
 	PomTR string `gorm:"type:varchar(255)"`
 	MarketPlace string `gorm:"type:varchar(255)"`
 	Whatsapp string `gorm:"type:varchar(255)"`
-	Price int64 `gorm:"type:int(15)"`
-	Quantity int `gorm:"type:int(11)"`
+	Price string `gorm:"type:varchar(255)"`
+	Quantity string `gorm:"type:varchar(255)"`
 	ProductCreated time.Time
 }
 

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"institute/helpers"
 	helper "institute/helpers"
 	"strconv"
@@ -32,8 +33,9 @@ func (ctl *controller) GetProducts() echo.HandlerFunc {
 		page := pagination.Page
 		size := pagination.Size
 
-		if page <= 0 || size <= 0 {
-			return ctx.JSON(400, helper.Response("Please provide query `page` and `size` in number!"))
+		if pagination.Page <= 0 || pagination.Size < 0 {
+			pagination.Page = 1
+			pagination.Size = 5
 		}
 
 		products := ctl.service.FindAll(page, size)
@@ -72,12 +74,15 @@ func (ctl *controller) ProductDetails() echo.HandlerFunc {
 func (ctl *controller) CreateProduct() echo.HandlerFunc {
 	return func (ctx echo.Context) error  {
 		input := dtos.InputProduct{}
+		fileHeader, err := ctx.FormFile("images") 
 
 		ctx.Bind(&input)
 
+		userID := ctx.Get("user_id")
+
 		validate = validator.New(validator.WithRequiredStructEnabled())
 
-		err := validate.Struct(input)
+		err = validate.Struct(input)
 
 		if err != nil {
 			errMap := helpers.ErrorMapValidation(err)
@@ -86,8 +91,11 @@ func (ctl *controller) CreateProduct() echo.HandlerFunc {
 			}))
 		}
 
-		product := ctl.service.Create(input)
+		product, errMap, err := ctl.service.Create(input,userID.(int), fileHeader)
 
+		if errMap != nil {
+			return errors.New("failed to create product")
+		}
 		if product == nil {
 			return ctx.JSON(500, helper.Response("Something went Wrong!", nil))
 		}

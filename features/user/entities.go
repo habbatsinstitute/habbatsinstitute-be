@@ -4,6 +4,7 @@ import (
 	"institute/features/course"
 	"institute/features/ebook"
 	"institute/features/news"
+	"institute/features/product"
 	"time"
 
 	"gorm.io/gorm"
@@ -23,5 +24,6 @@ type User struct {
 	News 		[]news.News		 	`gorm:"foreignKey:UserID;references:ID"`
 	Category 	[]news.Category 	`gorm:"foreignKey:UserID;references:ID"`
 	Ebooks		[]ebook.Ebook		`gorm:"foreignKey:UserID;references:ID"`
+	Product		[]product.Product	`gorm:"foreignKey:UserID;references:ID"`
 }
 

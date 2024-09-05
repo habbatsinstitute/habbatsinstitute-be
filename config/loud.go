@@ -31,6 +31,7 @@ type ProgramConfig struct {
 	CDN_FOLDER_ARTICLES		string
 	CDN_FOLDER_COURSE		string
 	CDN_FOLDER_EBOOKS		string
+	CDN_FOLDER_PRODUCT		string
 	OPENAI_KEY				string
 }
 
@@ -109,6 +110,10 @@ func loadConfig() *ProgramConfig {
 
 	if val, found := os.LookupEnv("CDN_FOLDER_COURSE"); found {
 		res.CDN_FOLDER_COURSE = val
+	}
+
+	if val, found := os.LookupEnv("CDN_FOLDER_PRODUCT"); found {
+		res.CDN_FOLDER_PRODUCT = val
 	}
 
 	if val, found := os.LookupEnv("OPENAI_KEY"); found {

@@ -9,6 +9,7 @@ import (
 	"institute/features/ebook"
 	"institute/features/item"
 	"institute/features/news"
+	"institute/features/product"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -32,7 +33,7 @@ func InitDB() *gorm.DB {
 }
 
 func migrate(db *gorm.DB) {
-	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{}, item.Item{}, ebook.Ebook{})
+	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{}, item.Item{}, ebook.Ebook{}, product.Product{})
 }
 
 func ConnectMongo() *mongo.Database {

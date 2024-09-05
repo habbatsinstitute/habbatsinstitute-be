@@ -9,6 +9,7 @@ import (
 	"institute/features/ebook"
 	"institute/features/item"
 	"institute/features/news"
+	"institute/features/product"
 	realtimechat "institute/features/realtime_chat"
 	"institute/features/user"
 	"institute/helpers"
@@ -51,6 +52,10 @@ import (
 	eh "institute/features/ebook/handler"
 	er "institute/features/ebook/repository"
 	eu "institute/features/ebook/usecase"
+
+	ph "institute/features/product/handler"
+	pr "institute/features/product/repository"
+	pu "institute/features/product/usecase"
 )
 
 func main() {
@@ -66,6 +71,7 @@ func main() {
 	routes.Chatbots(e, ChatbotHandler(cfg), jwtService, *cfg)
 	routes.Chats(e, ChatHandler(cfg))
 	routes.Ebooks(e, EbookHandler(), jwtService, *cfg)
+	routes.Products(e, ProductHandler(cfg), jwtService, *cfg )
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello anjay mabar!")
@@ -167,4 +173,14 @@ func ChatHandler(cfg *config.ProgramConfig) realtimechat.Handler {
 	userRepo := rcr.New(db, collection)
 	uc := rcu.New(socket, userRepo)
 	return rch.New(uc)
+}
+
+func ProductHandler(cfg *config.ProgramConfig) product.Handler {
+	db := utils.InitDB()
+	cdn := utils.CloudinaryInstance(*cfg)
+	validator := helpers.NewValidationRequest()
+
+	repo := pr.New(db, cdn, cfg)
+	uc := pu.New(repo, validator)
+	return ph.New(uc)
 }
