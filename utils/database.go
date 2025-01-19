@@ -7,6 +7,7 @@ import (
 	"institute/features/auth"
 	"institute/features/course"
 	"institute/features/ebook"
+	"institute/features/gemini"
 	"institute/features/item"
 	"institute/features/news"
 	"institute/features/product"
@@ -33,7 +34,7 @@ func InitDB() *gorm.DB {
 }
 
 func migrate(db *gorm.DB) {
-	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{}, item.Item{}, ebook.Ebook{}, product.Product{})
+	db.AutoMigrate(auth.User{}, course.Course{}, news.News{}, news.Category{}, item.Item{}, ebook.Ebook{}, product.Product{}, gemini.Information{})
 }
 
 func ConnectMongo() *mongo.Database {

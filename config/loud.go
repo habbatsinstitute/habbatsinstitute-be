@@ -33,6 +33,7 @@ type ProgramConfig struct {
 	CDN_FOLDER_EBOOKS		string
 	CDN_FOLDER_PRODUCT		string
 	OPENAI_KEY				string
+	GEMINI_KEY				string
 }
 
 type DatabaseConfig struct {
@@ -118,6 +119,10 @@ func loadConfig() *ProgramConfig {
 
 	if val, found := os.LookupEnv("OPENAI_KEY"); found {
 		res.OPENAI_KEY = val
+	}
+
+	if val, found := os.LookupEnv("GEMINI_KEY"); found {
+		res.GEMINI_KEY = val
 	}
 
 	return res

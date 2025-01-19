@@ -1,0 +1,36 @@
+package helpers
+
+import (
+	"fmt"
+	"institute/features/gemini"
+
+	"github.com/google/generative-ai-go/genai"
+)
+
+func PopulateParts(informations []gemini.Information, question string) []genai.Part {
+    populatedParts := make([]genai.Part, 0)
+    
+    for _, information := range informations {
+        inputText := fmt.Sprintf(`input: %s`, information.Question)
+        populatedParts = append(populatedParts, genai.Text(inputText))
+        outputText := fmt.Sprintf(`output: %s`, information.Answer)
+        populatedParts = append(populatedParts, genai.Text(outputText))
+    }
+    
+    populatedParts = append(populatedParts, genai.Text("\nSekarang, jawab pertanyaan berikut:"))
+    inputText := fmt.Sprintf(`input: %s`, question)
+    populatedParts = append(populatedParts, genai.Text(inputText))
+    populatedParts = append(populatedParts, genai.Text("output: "))
+    
+    return populatedParts
+}
+
+func ExtractAnswer(res *genai.GenerateContentResponse) string {
+    for _, candidate := range res.Candidates {
+        answers := candidate.Content.Parts
+        if len(answers) > 0 && answers[0] != nil {
+            return fmt.Sprintf(`%v`, answers[0])
+        }
+    }
+    return ""
+}

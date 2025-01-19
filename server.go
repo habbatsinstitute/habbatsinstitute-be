@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"institute/config"
 	"institute/features/auth"
 	"institute/features/chatbot"
 	"institute/features/course"
 	"institute/features/ebook"
+	"institute/features/gemini"
 	"institute/features/item"
 	"institute/features/news"
 	"institute/features/product"
@@ -17,9 +19,12 @@ import (
 	"institute/routes"
 	"institute/utils"
 	"institute/utils/websocket"
+	"log"
 	"net/http"
 
+	"github.com/google/generative-ai-go/genai"
 	"github.com/labstack/echo/v4"
+	"google.golang.org/api/option"
 
 	ah "institute/features/auth/handler"
 	ar "institute/features/auth/repository"
@@ -56,6 +61,10 @@ import (
 	ph "institute/features/product/handler"
 	pr "institute/features/product/repository"
 	pu "institute/features/product/usecase"
+
+	gh "institute/features/gemini/handler"
+	gr "institute/features/gemini/repository"
+	gu "institute/features/gemini/usecase"
 )
 
 func main() {
@@ -72,6 +81,7 @@ func main() {
 	routes.Chats(e, ChatHandler(cfg))
 	routes.Ebooks(e, EbookHandler(), jwtService, *cfg)
 	routes.Products(e, ProductHandler(cfg), jwtService, *cfg )
+	routes.Geminis(e, GeminiHandler())
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello anjay mabar!")
@@ -183,4 +193,19 @@ func ProductHandler(cfg *config.ProgramConfig) product.Handler {
 	repo := pr.New(db, cdn, cfg)
 	uc := pu.New(repo, validator)
 	return ph.New(uc)
+}
+
+func GeminiHandler() gemini.Handler {
+	db := utils.InitDB()
+	ctx := context.Background()
+	// cfg := config.ProgramConfig{}.GEMINI_KEY
+
+	genaiClient, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyASNEvvKq_TZSYI_Mz5N5ngPe7Lj3UWx18"))
+    if err != nil {
+        log.Fatalf("failed to initialize genai client: %v", err)
+    }
+
+	repo := gr.NewRepository(db)
+	uc := gu.New(repo, genaiClient)
+	return gh.New(uc)
 }
