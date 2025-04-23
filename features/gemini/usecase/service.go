@@ -108,7 +108,7 @@ func (uc *service) GetChatResponse(eCtx echo.Context, question string) (answer s
         return "tidak ada data yang relevan di database kami", nil
     }
 
-    model := uc.genai.GenerativeModel("gemini-pro")
+    model := uc.genai.GenerativeModel("gemini-2.0-flash")
     model.SetTemperature(0)
     
     parts := []genai.Part{

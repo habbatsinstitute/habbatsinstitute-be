@@ -6,10 +6,11 @@ import (
 	"institute/utils/websocket/packet"
 	"strconv"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Room struct {
-	ID	int
 	clients map[*Client]bool
 	join    chan *Client
 	leave   chan *Client
@@ -17,9 +18,8 @@ type Room struct {
 	sign    int
 }
 
-func NewRoom(id int, sign int, clients ...*Client) *Room {
+func NewRoom(sign int, clients ...*Client) *Room {
 	room := &Room{
-		ID: id,
 		clients: func() map[*Client]bool {
 			buffer := make(map[*Client]bool)
 			for _, client := range clients {
@@ -41,6 +41,7 @@ func NewRoom(id int, sign int, clients ...*Client) *Room {
 func (r *Room) Join(client *Client) {
 	r.clients[client] = true
 	client.rooms[r.sign] = r
+	logrus.Infof("Client %s bergabung ke Room %d", client.sign, r.sign)
 }
 
 func (r *Room) Leave(client *Client) {
@@ -55,11 +56,12 @@ func (r *Room) Foward(message *packet.Message) {
 			fmt.Println(err.Error())
 		}
 		ref := strings.Split(string(result), "@")
-		role, _ := strconv.Atoi(ref[0])
-		if message.Role == role { 
+		role := ref[0]
+		if message.Role == role {
 			continue
 		}
 		sign, err := strconv.Atoi(ref[1])
+		fmt.Printf("webscoket.room.sign %s", sign)
 		if err != nil {
 			fmt.Println(err.Error())
 		}

@@ -12,7 +12,7 @@ import (
 	"institute/features/item"
 	"institute/features/news"
 	"institute/features/product"
-	realtimechat "institute/features/realtime_chat"
+	realtimechat "institute/features/realtimeChat"
 	"institute/features/user"
 	"institute/helpers"
 	"institute/middlewares"
@@ -50,10 +50,6 @@ import (
 	ir "institute/features/item/repository"
 	iu "institute/features/item/usecase"
 
-	rch "institute/features/realtime_chat/handler"
-	rcr "institute/features/realtime_chat/repository"
-	rcu "institute/features/realtime_chat/usecase"
-
 	eh "institute/features/ebook/handler"
 	er "institute/features/ebook/repository"
 	eu "institute/features/ebook/usecase"
@@ -65,6 +61,9 @@ import (
 	gh "institute/features/gemini/handler"
 	gr "institute/features/gemini/repository"
 	gu "institute/features/gemini/usecase"
+
+	rh "institute/features/realtimeChat/handler"
+	ru "institute/features/realtimeChat/usecase"
 )
 
 func main() {
@@ -78,10 +77,10 @@ func main() {
 	routes.Users(e, UserHandler(), jwtService, *cfg)
 	routes.Newss(e, NewsHandler(), jwtService, *cfg)
 	routes.Chatbots(e, ChatbotHandler(cfg), jwtService, *cfg)
-	routes.Chats(e, ChatHandler(cfg))
 	routes.Ebooks(e, EbookHandler(), jwtService, *cfg)
 	routes.Products(e, ProductHandler(cfg), jwtService, *cfg )
 	routes.Geminis(e, GeminiHandler())
+	routes.Chats(e, ChatHandler())
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello anjay mabar!")
@@ -174,17 +173,6 @@ func ItemHandler(cfg *config.ProgramConfig) item.Handler {
 	return ih.New(uc)
 }
 
-func ChatHandler(cfg *config.ProgramConfig) realtimechat.Handler {
-	db := utils.InitDB()
-	mongoDB := utils.ConnectMongo()
-	collection := mongoDB.Collection("private_chat_histories")
-	socket := websocket.NewServer()
-	
-	userRepo := rcr.New(db, collection)
-	uc := rcu.New(socket, userRepo)
-	return rch.New(uc)
-}
-
 func ProductHandler(cfg *config.ProgramConfig) product.Handler {
 	db := utils.InitDB()
 	cdn := utils.CloudinaryInstance(*cfg)
@@ -208,4 +196,11 @@ func GeminiHandler() gemini.Handler {
 	repo := gr.NewRepository(db)
 	uc := gu.New(repo, genaiClient)
 	return gh.New(uc)
+}
+
+func ChatHandler() realtimechat.Handler {
+	// repo := rr.
+	socket := websocket.NewServer()
+	uc := ru.New(socket)
+	return rh.New(uc)
 }
